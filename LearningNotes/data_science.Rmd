@@ -1,0 +1,218 @@
+---
+title: "Data Science Notes"
+output: html_notebook
+---
+
+# How to prepare?
+A lot of areas to be asked. What is my strength, and what is expected from the interviewer?
+
+  + Probability: red ball, black balls?
+  + Statistics: hypothesis testing? modeling?
+  + ML algorithm: pros and cons of each algorithm, and practical projects? 
+  + Programming language: R, Python?
+  + what is the source that you use to apply for jobs?
+  
+
+
+# Section 1: A/B testing
+### 1.1. Five step process of A/B test
+
+  + Step one: define success
+      - What do you want to achieve with A/B testing?
+  + Step two: Identify bottlenecks
+      - Key factors to measure the success. Site analysis along with your instincts will suggest bottlenecks where you can focus your attention.
+  + Step three: Construct a hypothesis
+  + Step four: Prioritize
+      - Use ROI (return on investment). Prioritize your experiments based on your prediction of their impact.
+  + Step five: Test
+
+### 1.2. Examples A/B test
+  
+  + hiding promotion code in an expandable link increases in revenue per visitor.
+  + removing header navigation links makes customers focus on checking out.
+  + 'Why Use Us?'  Versus 'How It Works?'
+      - 'Why Use Us?' focuses more on competitions.
+      - 'How It Works' thinks what the customer thinks.
+  + star ratings vs no star ratings?
+  
+  
+### 1.3. A/B Testing - What to test?  
+  
+  + Headlines
+  + Sub headline
+  + Images
+  + Texts
+  + CTA text and button
+  + Links
+  + Badges
+  + Media Mentions
+  + Social Mentions
+  + Sales promotions and offers
+  + Price stuctures
+  + Delivery options
+  + Payment options
+  + Site navigations and user interface
+  
+## Section 2: Recommendation System
+There are three main recommendation systems:
+
+
+### 2.1. Content-based
+
+ predicts what a user like based on what that user like in the past.
+ 
+ + Pros
+    + No need for data on other users
+    + Able to recommend to users with unique tastes
+    + able to recommend new & unpopular items
+        + no first rate problem
+    + Explanations for recommended items
+      + content features that caused an item to be recommended
+  
+  + Cons
+    + finding the appropriate feature is hard
+        + e.g., images, movies, music
+    + Overspecialization
+        + never recommends items outside users content profile
+        + people might have multiple interests
+        + Unaable to exploit quality judgment of other users
+    + Code-start problem for new users
+        + how to build a user profile?
+    
+### 2.2. Collaborative 
+
+predict what a particular user like based on what other similar users like
+     
+  + user-user filtering
+  + item-item filtering.
+  + Usually, item-item filtering is better than user-user filtering (people's tastes are different). 
+  + use cosine distance to measure similarity, with centered rating values.
+
+pros/Cons of collaborative filtering
+
+  + works for any kind of item
+  + no feature selection needed
+  
+  Cons: 
+  
+   + cold start
+     + Need enough users in the system to find a match.
+   + Sparsity: 
+     + the user/ratings matrix is sparse
+     + hard to find users that have rated the same items
+    
+  + first rater 
+    + cannot recommend an unrated item 
+    + new items, esoteric items.
+  
+  + Popularity bias
+    + tends to recommend popular items. (Harry Potter Effect)
+    
+### 2.3. Hybrid Methods
+ Add content-based methods to collaborative filtering
+  
+  + Try this example https://medium.com/towards-data-science/how-to-build-a-simple-song-recommender-296fcbc8c85
+  + **a good reference of deep learning**: Salakhutdinov, Ruslan, Mnih, Andriy, and Hinton, Geoffrey. Restricted boltzmann machines for collaborative filtering. In Proceedings of the 24th international conference on Machine learning, pp. 791–798. ACM, 2007.
+  
+
+
+## Section 3:  Classification Methods
+
+### 3.1 Decision Trees
+  + If the target variable is discrete, then it's called *classification tree*, whereas for continuous outcome, it's called *regression tree*.
+  + **CART** (Classification And Regression Tree) analysis is an umbrella term used for both of the above procedures.
+  + Algorithm for constructing decision trees usually work top-down, by choosing a variable at each step that best splits the set of items. The "best" split is decided by [metrics](https://en.wikipedia.org/wiki/Decision_tree_learning) that measures the homogeneity of the target variable within the subsets. For a set of $J$ classes, suppose $i\in\{1, 2, \ldots, J\}$, and let $p_i$ be the fraction of items labeled with class $i$ in the set.
+    + Gini Impurity: $Gini(E) = \sum_{i=1}^Jp_i(1-p_i) = 1- \sum_{i=1}^Jp_i^2$
+    + Information Gain: $H(E) = -\sum_{i=1}^Jp_i\log_2p_i$
+ 
+### 3.2  **Random Forest**
+  + Reference: **Element of Statistical Learning**
+  + Random forest: decision tree --> tree bagging --> random forest
+      + random forests differs in one way from tree bagging. They use a modified tree learning algorithm that selects, at each candidate split in the learning process,  **a random subset of the features**. 
+       + the reason for doing this is the correlation of the trees in an ordinary bootstrap sample: if one or a few features are very strong predictors for the response variable, these features will be selected in many of the B trees, causing them to be correlated. 
+      + Typically, for a classification problem with $p$ features, $\sqrt{p}$ (rounded down) features are used in each split. For regression problems, the inventors recommend $p/3$ (round down) with a minimum node size of 5 as the default.
+ 
+  + Algorithm
+    + From $b=1$ to B
+        (a) Draw a bootstrapped sample $Z^{\ast}$ of size $N$ from the training set.
+        (b) Grow a random-forest tree $T_b$ to the bootstrapped data, by recursively repeating the following steps for each terminal node of the tree, until node size is reached. 
+            + randomly select $m$ variables from the $p$ variables. 
+            + pick the best variable/split-point among the $m$.
+            + split the node into two daughter nodes. 
+    + Output the emsemble of trees $\{T_1, \ldots, T_B\}$
+    + Then the prediction at a new point $x$
+        + Regression: $\hat{f}^B(x) = \frac{1}{B}\sum_{i=1}^BT_i(x)$
+        + Classification: the majority vote.
+
+ + Feature
+     + Simpler to train and tune
+ 
+     + Because of random selection of variables, the trees trained are identically distributed. This is different from boosting methods, where trees are growed in an adaptive way to reduce bias, and thus are not i.d.
+     + Out of bag sample (OOB) can play a similar role as N-fold cross-validation. For each observation $(x_i, y_i)$, construct the random forest predictor by averaging those trees that is built without this sample. When OOB error stabilize, the training can be terminated. 
+    + OOB can measure variable importance, i.e., the prediction strength of each variable. The importance of $j$th variable is measured by the decreased accuracy when the values of this variable are randomly permuted in the OOB samples. This process will be done for each of the trees, and resulting accuracy is averaged. 
+ + R package is [*randomForest*](https://cran.r-project.org/web/packages/randomForest/index.html)
+ 
+ 
+### 3.3  K-Nearest Means 
+  
+  + Reference: https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm and **Element of Statistical Learning**.
+  + Algorithm
+    + calculate the pairwise distances (<span style = "color:red">Euclidian distance</span> for continuous variable, <span style = "color:red">hamming distance [overlap metric]</span> for discrete variable)
+    + for sample $i$, get its $k$-nearest neighbors
+    + tabulate and see the majority class label of the $k$ neighbors
+    + assign label to sample $i$.
+    + repeat step 1-step 4 until all samples are classified.
+  + Features:
+    + $k$-nearest neighbor is often successful where the decision boundary is irregular.
+    + One drawback of nearest-neighbor rules in general is the computational load, both in finding the neighbors and storing the entire training set
+ + R package is [*FastKNN*](https://cran.r-project.org/web/packages/FastKNN/index.html)
+ 
+### 3.4 Naive Bayes
+
+  + Often called Bayes classifier, whose name comes from the Bayes rule
+     \[ P(y|\mathbf X) = \frac{P(y)\cdot P(\mathbf X|y)}{P(\mathbf X)} = \frac{P(y)\cdot P(\mathbf X|y)}{\sum_{y}P(\mathbf X, y)} \]
+  + Assumptions: Features are independent of each other given label 
+  + *conditional independence*, $p(x_1, x_2|y) = p(x_1|y)*p(x_2|y)$, or equivalently, $p(x_1|y) = p(x_1|x_2, y)$
+  + under this assumption, we have $p(\mathbf x|y) = \prod_{i=1}^kp(x_i|y)$
+  + Bayes estimator can be used if for some specific $x_i$, $p(x_i|y)=0$, by maximizing posterior estimate.
+  + Algorithm
+    + Given training data
+    + Learn $P(y)$
+    + Learn $P(\mathbf x|y=1), P(\mathbf x|y=2), \ldots, P(\mathbf x|y=k)$
+    + Compute $P(y|\mathbf x) = P(y)\cdot P(\mathbf X|y)/\sum_{y}P(\mathbf X, y)$
+    + Predict with decision theory or use $\arg \max_YP(y|\mathbf x)$
+ 
+ 
+### 3.5 Emsemble Methods
+
+  + Bagging stands for **B**ootstrapped **Agg**regat**ing**
+      + A learning algorithm is unstable if small changes in the training data can produce large changes in the output hypothesis. $\rightarrow$ high variance.
+      + Bagging have little benefits when used with stable learning algorithm.
+      + Bagging works best for high variance and low bias algorithm.
+  + Boosting
+      + looking at errors from previous classifiers to decide what to focus on the next iteration over data. 
+      + more weights on 'hard' examples --- those we have committed mistakes in the previous iteration.
+  + Adaboost algorithm
+    + input 
+        + Learn - Base learning algorithm
+        + S --- set of N labeled training examples.
+    + output 
+        + $H = [H_1, \cdots, H_L, weighted~votes~(\alpha_1, \ldots, \alpha_L)]$
+    + Steps: Let $D_l$ be the distribution of round $l$ for the training set. 
+        + initialize $D_1(i) = 1/N$ (i.e., uniform distribution)
+        + For $l = 1, \ldots, L$, Do
+            + $h_l = learn (S, D_l)$
+            + $\epsilon_l = error(h_l, S, D_l)$
+            + $\alpha_l = \frac{1}{2}\ln\frac{1-\epsilon_l}{\epsilon_l}$
+            + $D_{l+1}(i) = D_l(i)\times e^{\alpha_i}$ if $h_l(x_i) \neq y_i$, else               $D_{l+1}(i) = D_l(i)\times e^{-\alpha_i}$ 
+            
+    + Note that $\epsilon_l < 0.5$ implies $\alpha_l > 0$, which means weight decreases for correct examples. 
+    + Feature:
+        + Boosting is often, though not always, robust to overfitting (Schapire 1989).
+        +  Test error continues to decrease even after training error goes to 0.
+        + Sensitive to noise and outliers, as compared to bagging that is robust to outliers.
+        
+        
+### 3.6 Support Vector Machine        
+        
+
