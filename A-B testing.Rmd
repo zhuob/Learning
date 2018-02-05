@@ -1,0 +1,54 @@
+---
+title: "A/B Testing"
+output: html_notebook
+---
+
+# How to prepare?
+A lot of areas to be asked. What is my strength, and what is expected from the interviewer?
+
+  + Probability: red ball, black balls?
+  + Statistics: hypothesis testing? modeling?
+  + ML algorithm: pros and cons of each algorithm, and practical projects? 
+  + Programming language: R, Python?
+  + what is the source that you use to apply for jobs?
+  
+
+
+# Section 1: A/B testing
+### 1.1. Five step process of A/B test
+
+  + Step one: define success
+      - What do you want to achieve with A/B testing?
+  + Step two: Identify bottlenecks
+      - Key factors to measure the success. Site analysis along with your instincts will suggest bottlenecks where you can focus your attention.
+  + Step three: Construct a hypothesis
+  + Step four: Prioritize
+      - Use ROI (return on investment). Prioritize your experiments based on your prediction of their impact.
+  + Step five: Test
+
+### 1.2. Examples A/B test
+  
+  + hiding promotion code in an expandable link increases in revenue per visitor.
+  + removing header navigation links makes customers focus on checking out.
+  + 'Why Use Us?'  Versus 'How It Works?'
+      - 'Why Use Us?' focuses more on competitions.
+      - 'How It Works' thinks what the customer thinks.
+  + star ratings vs no star ratings?
+  
+  
+### 1.3. A/B Testing - What to test?  
+  
+  + Headlines
+  + Sub headline
+  + Images
+  + Texts
+  + CTA text and button
+  + Links
+  + Badges
+  + Media Mentions
+  + Social Mentions
+  + Sales promotions and offers
+  + Price stuctures
+  + Delivery options
+  + Payment options
+  + Site navigations and user interface
