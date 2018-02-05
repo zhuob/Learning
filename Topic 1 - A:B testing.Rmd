@@ -1,6 +1,8 @@
 ---
 title: "A/B Testing"
-output: html_notebook
+output: 
+    html_notebook:
+      number_sections: true
 ---
 
 # How to prepare?
@@ -14,8 +16,8 @@ A lot of areas to be asked. What is my strength, and what is expected from the i
   
 
 
-# Section 1: A/B testing
-### 1.1. Five step process of A/B test
+# A/B testing
+## Five step process of A/B test
 
   + Step one: define success
       - What do you want to achieve with A/B testing?
@@ -26,7 +28,7 @@ A lot of areas to be asked. What is my strength, and what is expected from the i
       - Use ROI (return on investment). Prioritize your experiments based on your prediction of their impact.
   + Step five: Test
 
-### 1.2. Examples A/B test
+## Examples A/B test
   
   + hiding promotion code in an expandable link increases in revenue per visitor.
   + removing header navigation links makes customers focus on checking out.
@@ -36,7 +38,7 @@ A lot of areas to be asked. What is my strength, and what is expected from the i
   + star ratings vs no star ratings?
   
   
-### 1.3. A/B Testing - What to test?  
+## A/B Testing - What to test?  
   
   + Headlines
   + Sub headline

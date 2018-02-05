@@ -1,6 +1,8 @@
 ---
 title: "Recommendation System"
-output: html_notebook
+output: 
+  html_notebook:
+    number_sections: true
 ---
 
 
@@ -8,7 +10,7 @@ output: html_notebook
 There are three main recommendation systems:
 
 
-### 1. Content-based
+# Content-based
 
  predicts what a user like based on what that user like in the past.
  
@@ -30,7 +32,7 @@ There are three main recommendation systems:
     + Code-start problem for new users
         + how to build a user profile?
     
-### 2.2. Collaborative 
+# Collaborative 
 
 predict what a particular user like based on what other similar users like
      
@@ -59,7 +61,7 @@ pros/Cons of collaborative filtering
   + Popularity bias
     + tends to recommend popular items. (Harry Potter Effect)
     
-### 2.3. Hybrid Methods
+# Hybrid Methods
  Add content-based methods to collaborative filtering
   
   + Try this example https://medium.com/towards-data-science/how-to-build-a-simple-song-recommender-296fcbc8c85

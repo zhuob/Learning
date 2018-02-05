@@ -1,18 +1,19 @@
 ---
 title: "Classification"
-output: html_notebook
+output: 
+  html_notebook:
+    number_sections: true
 ---
   
 
-
-## 3.1 Decision Trees
+# Decision Trees
   + If the target variable is discrete, then it's called *classification tree*, whereas for continuous outcome, it's called *regression tree*.
   + **CART** (Classification And Regression Tree) analysis is an umbrella term used for both of the above procedures.
   + Algorithm for constructing decision trees usually work top-down, by choosing a variable at each step that best splits the set of items. The "best" split is decided by [metrics](https://en.wikipedia.org/wiki/Decision_tree_learning) that measures the homogeneity of the target variable within the subsets. For a set of $J$ classes, suppose $i\in\{1, 2, \ldots, J\}$, and let $p_i$ be the fraction of items labeled with class $i$ in the set.
     + Gini Impurity: $Gini(E) = \sum_{i=1}^Jp_i(1-p_i) = 1- \sum_{i=1}^Jp_i^2$
     + Information Gain: $H(E) = -\sum_{i=1}^Jp_i\log_2p_i$
  
-## 3.2  **Random Forest**
+#  Random Forest
   + Reference: **Element of Statistical Learning**
   + Random forest: decision tree --> tree bagging --> random forest
       + random forests differs in one way from tree bagging. They use a modified tree learning algorithm that selects, at each candidate split in the learning process,  **a random subset of the features**. 
@@ -40,7 +41,7 @@ output: html_notebook
  + R package is [*randomForest*](https://cran.r-project.org/web/packages/randomForest/index.html)
  
  
-## 3.3  K-Nearest Means 
+# K-Nearest Means 
   
   + Reference: https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm and **Element of Statistical Learning**.
   + Algorithm
@@ -54,7 +55,7 @@ output: html_notebook
     + One drawback of nearest-neighbor rules in general is the computational load, both in finding the neighbors and storing the entire training set
  + R package is [*FastKNN*](https://cran.r-project.org/web/packages/FastKNN/index.html)
  
-## 3.4 Naive Bayes
+# Naive Bayes
 
   + Often called Bayes classifier, whose name comes from the Bayes rule
   $P(y|\mathbf X) = \frac{P(y)\cdot P(\mathbf X|y)}{P(\mathbf X)} = \frac{P(y)\cdot P(\mathbf X|y)}{\sum_{y}P(\mathbf X, y)}$
@@ -70,7 +71,7 @@ output: html_notebook
     + Predict with decision theory or use $\arg \max_YP(y|\mathbf x)$
  
  
-## 3.5 Emsemble Methods
+# Emsemble Methods
 
   + Bagging stands for **B**ootstrapped **Agg**regat**ing**
       + A learning algorithm is unstable if small changes in the training data can produce large changes in the output hypothesis. $\rightarrow$ high variance.
@@ -100,6 +101,6 @@ output: html_notebook
         + Sensitive to noise and outliers, as compared to bagging that is robust to outliers.
         
         
-## 3.6 Support Vector Machine        
+# Support Vector Machine        
         
 

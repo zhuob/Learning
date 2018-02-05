@@ -1,3 +1,3 @@
-In this repository, I keep track of what I learned from reading various machine learning materials. 
+In this repository, I keep notes on what I read from machine learning materials. 
 
-If you have problem reading the math formulas in the Rmarkdown file, I suggest you try the Chrome extension GitHub with MathJax [https://chrome.google.com/webstore/detail/github-with-mathjax/ioemnmodlmafdkllaclgeombjnmnbima]. It's quite convenient
+The Chrome extension GitHub with [MathJax] (https://chrome.google.com/webstore/detail/github-with-mathjax/ioemnmodlmafdkllaclgeombjnmnbima]) is a very good tool to view the math formulas in the Rmarkdown file. 
