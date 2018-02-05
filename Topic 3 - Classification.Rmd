@@ -1,8 +1,9 @@
 ---
-title: "Data Science Notes"
-output: html_notebook
+title: "Classification"
+output:
+  github_document:
+    pandoc_args: --webtex
 ---
-
   
 
 
