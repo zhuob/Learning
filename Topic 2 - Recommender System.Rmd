@@ -1,0 +1,67 @@
+---
+title: "Recommendation System"
+output: html_notebook
+---
+
+
+
+There are three main recommendation systems:
+
+
+### 1. Content-based
+
+ predicts what a user like based on what that user like in the past.
+ 
+ + Pros
+    + No need for data on other users
+    + Able to recommend to users with unique tastes
+    + able to recommend new & unpopular items
+        + no first rate problem
+    + Explanations for recommended items
+      + content features that caused an item to be recommended
+  
+  + Cons
+    + finding the appropriate feature is hard
+        + e.g., images, movies, music
+    + Overspecialization
+        + never recommends items outside users content profile
+        + people might have multiple interests
+        + Unaable to exploit quality judgment of other users
+    + Code-start problem for new users
+        + how to build a user profile?
+    
+### 2.2. Collaborative 
+
+predict what a particular user like based on what other similar users like
+     
+  + user-user filtering
+  + item-item filtering.
+  + Usually, item-item filtering is better than user-user filtering (people's tastes are different). 
+  + use cosine distance to measure similarity, with centered rating values.
+
+pros/Cons of collaborative filtering
+
+  + works for any kind of item
+  + no feature selection needed
+  
+  Cons: 
+  
+   + cold start
+     + Need enough users in the system to find a match.
+   + Sparsity: 
+     + the user/ratings matrix is sparse
+     + hard to find users that have rated the same items
+    
+  + first rater 
+    + cannot recommend an unrated item 
+    + new items, esoteric items.
+  
+  + Popularity bias
+    + tends to recommend popular items. (Harry Potter Effect)
+    
+### 2.3. Hybrid Methods
+ Add content-based methods to collaborative filtering
+  
+  + Try this example https://medium.com/towards-data-science/how-to-build-a-simple-song-recommender-296fcbc8c85
+  + **a good reference of deep learning**: Salakhutdinov, Ruslan, Mnih, Andriy, and Hinton, Geoffrey. Restricted boltzmann machines for collaborative filtering. In Proceedings of the 24th international conference on Machine learning, pp. 791–798. ACM, 2007.
+  
