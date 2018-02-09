@@ -1,0 +1,39 @@
+---
+title: "Cross Validation"
+output: 
+  html_notebook:
+    number_sections: true
+---
+  
+# General View
+
+Cross Validation (CV) is a model validation technique used to assess how the results of a statistical analysis will generalize to an independent data set. The goal of CV is, usually, to limit the problems like overfitting, or to evaluate how the model will generalize to an independent data. However, cross-validation is not necessary in all cases. For example, in linear regression, the metric for model accuracy is mean square error, and it can be unbiasedly and accurately estimated from the training data (mathematical formula can be derived). 
+
+# Reference
+  + [Wikipedia](https://en.wikipedia.org/wiki/Cross-validation_(statistics))
+  + [Gitte Vanwinckelen, 2012](https://lirias.kuleuven.be/bitstream/123456789/346385/3/OnEstimatingModelAccuracy.pdf): On Estimating Model Accuracy with Repeated Cross-Validation
+
+# Types of CV
+
+  + Exhaustive CV: Use all possible ways to divide the original sample
+    + Leave-p-out CV: it requires training and validating the model ${n \choose p}$ times, where $n$ is the number of observations.  **Computationally infeasible**
+    + Leave-one-out CV: special case of leave-p-out. **No excessive computation**
+    
+  + Non Exhaustive CV: Do not compute all ways of spliting the data. It's approximations of leave-p-out CV.
+    + K-fold CV: the original sample is randomly partitioned into $k$ equal-size subsamples. Of the $k$ subsamples, one is retained as the validation data for testing the model, the remaining $k-1$ are used to train the model. The cross-validation process is then repeated $k$ times, with each subsample used exactly once as the validation data. The $k$ results then could be averaged to produce a single estimation.
+    + Hold-out method: randomly assign data points into training set and test set. 
+    + Repeated random subsampling validation: randomly splits the data into training and test set. For each split, the model is fit to the training data, and prediction accuracy is assessed by the validation data. 
+    
+# Features of K-fold validation
+
+  + The advantage of k-fold CV over repeated random subsampling is that all of the observations are used in the training and testing data, and each observation is used in validation exactly once.
+  + When $k = n$, it reduces to leave-one-out CV. 
+  + Stratified $k$-fold CV: the folds are selected so that the mean response value is approximately equal in all the folds.   
+  
+# Repeated CV
+  
+  Cross Validation has variance and non-zero bias, as pointed out by Hastie (2011).  It is often advocated to repeat the CV a number of times and average the results, or to construct the confidence interval that indicates how accurate the estimates are.   
+
+    
+    
+    
