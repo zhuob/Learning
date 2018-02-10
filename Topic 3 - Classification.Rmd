@@ -103,29 +103,8 @@ output:
         
 # Support Vector Machine        
         
+        
+# Boosting for logistic regression
+  + Reference: https://web.stanford.edu/~hastie/Papers/AdditiveLogisticRegression/alr.pdf 
 
 
-# Metric for model evaluation
-
-## The Kappa statistic 
-    
-  + Reference: http://www1.cs.columbia.edu/~julia/courses/CS6998/Interrater_agreement.Kappa_statistic.pdf
-  + Accuracy and Precision: in the above reference, there's an interesting figure showing the difference between the two concept. If we actually hit the bull's eye, we are *accurate* (representing agreement with the gold standard); if our shots land together, we have good *precision* (good reliability); if our shots land together and hit the bull's eye, we are both precise and accurate. 
-  + Kappa measures how different is the observed agreement from the expected agreement. Kappa = $\frac{p_0 - p_e}{1-p_e}$ where $p_0$ is the observed agreement and $p_e$ is the expected agreement.
-  + Kappa is standardized to lie in between 0 and 1, where 1 is perfect agreement, 0 is exactly what would be expected by chance, and negative values indicate agreement less by chance.
-  + Weighted Kappa: Assigns less weight to agreement as categories are further apart
-
-  + Feature:
-    +  Interpretation of Kappa
-      
-      Kappa   | Agreement 
-      ----  |    ------
-       < 0 Less  | than chance agreement 
-      0.01–0.20  | Slight agreement   
-      0.21– 0.40 | Fair agreement    
-      0.41–0.60  |Moderate agreement  
-      0.61–0.80  |Substantial agreement  
-      0.81–0.99  |Almost perfect agreement  
-
-    + Kappa may not be reliable for rare observations: high agreement does not guarantee higher kappa. For example, if $p_0 = 84/99$, $p_1 = 0.85$,  that gives an agreement of 85\%, but a kappa value of merely 0.01. 
-    

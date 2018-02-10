@@ -1,19 +1,21 @@
 ---
-title: "Cross Validation"
+title: "Performance Evaluation"
 output: 
   html_notebook:
     number_sections: true
 ---
   
-# General View
+In this post, I'll discuss how we can evaluate the machine learning algorithms and the metrics for evaluation. 
+  
+# Cross Validation
 
 Cross Validation (CV) is a model validation technique used to assess how the results of a statistical analysis will generalize to an independent data set. The goal of CV is, usually, to limit the problems like overfitting, or to evaluate how the model will generalize to an independent data. However, cross-validation is not necessary in all cases. For example, in linear regression, the metric for model accuracy is mean square error, and it can be unbiasedly and accurately estimated from the training data (mathematical formula can be derived). 
 
-# Reference
+## Reference
   + [Wikipedia](https://en.wikipedia.org/wiki/Cross-validation_(statistics))
   + [Gitte Vanwinckelen, 2012](https://lirias.kuleuven.be/bitstream/123456789/346385/3/OnEstimatingModelAccuracy.pdf): On Estimating Model Accuracy with Repeated Cross-Validation
 
-# Types of CV
+## Types of CV
 
   + Exhaustive CV: Use all possible ways to divide the original sample
     + Leave-p-out CV: it requires training and validating the model ${n \choose p}$ times, where $n$ is the number of observations.  **Computationally infeasible**
@@ -24,16 +26,40 @@ Cross Validation (CV) is a model validation technique used to assess how the res
     + Hold-out method: randomly assign data points into training set and test set. 
     + Repeated random subsampling validation: randomly splits the data into training and test set. For each split, the model is fit to the training data, and prediction accuracy is assessed by the validation data. 
     
-# Features of K-fold validation
+## Features of K-fold validation
 
   + The advantage of k-fold CV over repeated random subsampling is that all of the observations are used in the training and testing data, and each observation is used in validation exactly once.
   + When $k = n$, it reduces to leave-one-out CV. 
   + Stratified $k$-fold CV: the folds are selected so that the mean response value is approximately equal in all the folds.   
   
-# Repeated CV
+## Repeated CV
   
   Cross Validation has variance and non-zero bias, as pointed out by Hastie (2011).  It is often advocated to repeat the CV a number of times and average the results, or to construct the confidence interval that indicates how accurate the estimates are.   
 
+
     
     
+# Metric for Model Performance Evaluation
+
+## The Kappa statistic 
+    
+  + Reference: http://www1.cs.columbia.edu/~julia/courses/CS6998/Interrater_agreement.Kappa_statistic.pdf
+  + Accuracy and Precision: in the above reference, there's an interesting figure showing the difference between the two concept. If we actually hit the bull's eye, we are *accurate* (representing agreement with the gold standard); if our shots land together, we have good *precision* (good reliability); if our shots land together and hit the bull's eye, we are both precise and accurate. 
+  + Kappa measures how different is the observed agreement from the expected agreement. Kappa = $\frac{p_0 - p_e}{1-p_e}$ where $p_0$ is the observed agreement and $p_e$ is the expected agreement.
+  + Kappa is standardized to lie in between 0 and 1, where 1 is perfect agreement, 0 is exactly what would be expected by chance, and negative values indicate agreement less by chance.
+  + Weighted Kappa: Assigns less weight to agreement as categories are further apart
+
+  + Feature:
+    +  Interpretation of Kappa
+      
+      Kappa   | Agreement 
+      ----  |    ------
+       < 0 | Less than chance agreement 
+      0.01–0.20  | Slight agreement   
+      0.21– 0.40 | Fair agreement    
+      0.41–0.60  |Moderate agreement  
+      0.61–0.80  |Substantial agreement  
+      0.81–0.99  |Almost perfect agreement  
+
+    + Kappa may not be reliable for rare observations: high agreement does not guarantee higher kappa. For example, if $p_0 = 84/99$, $p_1 = 0.85$,  that gives an agreement of 85\%, but a kappa value of merely 0.01. 
     
