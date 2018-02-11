@@ -79,6 +79,7 @@ output:
       + Bagging works best for high variance and low bias algorithm.
   + Boosting
       + looking at errors from previous classifiers to decide what to focus on the next iteration over data. 
+      + The main idea of boosting is to add new models to the ensemble sequentially. 
       + more weights on 'hard' examples --- those we have committed mistakes in the previous iteration.
   + Adaboost algorithm
     + input 
@@ -108,3 +109,23 @@ output:
   + Reference: https://web.stanford.edu/~hastie/Papers/AdditiveLogisticRegression/alr.pdf 
 
 
+# Gradient Boosting Machines
+
+## References
+
+ +  J.H. Friedman (2001). "Greedy Function Approximation: A Gradient Boosting Machine," Annals of Statistics 29(5):1189-1232.
+ + Friedman, J., Hastie, T., and Tibshirani, R. (2000). Special invited paper. additive logistic regression: A statistical view of boosting. Annals of statistics, pages 337–374.
+ + Schapire, R. E. and Freund, Y. (2012). Boosting: Foundations and Algorithms. MIT Press.
+ + http://www.chengli.io/tutorials/gradient_boosting.pdf
+ + [Natekin, Alexey, and Alois Knoll. "Gradient boosting machines, a tutorial." Frontiers in neurorobotics 7 (2013): 21.](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3885826/)
+ + `R` package [`gbm`](https://cran.r-project.org/web/packages/gbm/)
+ 
+## Method 
+
+## Relative Influence
+ 
+ 
+
+  
+  
+ 

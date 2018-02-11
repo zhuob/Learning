@@ -1,0 +1,26 @@
+---
+title: "Variable Importance"
+output: 
+  html_notebook:
+    number_sections: true
+---
+  
+Variable importance evaluation functions can be separated into two groups: **model-based  metrics** and **model free metrics**.
+  
+  
+# Model Specific Metrics
+
+ +  Reference
+     + **Element of Statistical Learning** (ELS)
+     + R package [`caret`](http://topepo.github.io/caret/variable-importance.html)
+     + [Louppe, Gilles, et al. "Understanding variable importances in forests of randomized trees." Advances in neural information processing systems. 2013.](http://papers.nips.cc/paper/4928-understanding-variable-importances-in-forests-of-randomized-trees.pdf)
+     
+## Random Forest
+  For random forest, there are two types of variable importance metrics. 
+    + 
+    
+## Stochastic Gradient Boostinng 
+  It is also sometimes called Gradient Boosting Machine (GBM)
+  
+  
+# Model Free Metrics  

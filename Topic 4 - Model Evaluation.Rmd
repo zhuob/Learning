@@ -2,10 +2,12 @@
 title: "Performance Evaluation"
 output: 
   html_notebook:
+    # bibliography: reference.bib
+    # csl: biomed-central.csl
     number_sections: true
 ---
   
-In this post, I'll discuss how we can evaluate the machine learning algorithms and the metrics for evaluation. 
+This part is to summarize how we can evaluate the machine learning algorithms and the metrics for evaluation. 
   
 # Cross Validation
 
@@ -14,6 +16,7 @@ Cross Validation (CV) is a model validation technique used to assess how the res
 ## Reference
   + [Wikipedia](https://en.wikipedia.org/wiki/Cross-validation_(statistics))
   + [Gitte Vanwinckelen, 2012](https://lirias.kuleuven.be/bitstream/123456789/346385/3/OnEstimatingModelAccuracy.pdf): On Estimating Model Accuracy with Repeated Cross-Validation
+  + **Element of Statistical Learning** (ELS)
 
 ## Types of CV
 
@@ -32,11 +35,13 @@ Cross Validation (CV) is a model validation technique used to assess how the res
   + When $k = n$, it reduces to leave-one-out CV. 
   + Stratified $k$-fold CV: the folds are selected so that the mean response value is approximately equal in all the folds.   
   
-## Repeated CV
+## Repeated CV 
   
   Cross Validation has variance and non-zero bias, as pointed out by Hastie (2011).  It is often advocated to repeat the CV a number of times and average the results, or to construct the confidence interval that indicates how accurate the estimates are.   
 
-
+## The Wrong and Right Way to Do Cross-Validation
+  
+  In the book "The Element of Statistical Learning" Section 7.10.2, they illustrated an example of Correct and Wrong way of doing CV.
     
     
 # Metric for Model Performance Evaluation
