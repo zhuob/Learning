@@ -120,18 +120,11 @@ output:
  + `R` package [`gbm`](https://cran.r-project.org/web/packages/gbm/)
  
 ## Method 
-<<<<<<< HEAD
+
 (based on Natekin and Alois, 2013) Consider the data set $(\mathbf x, y)_{i = 1}^N$, where $\mathbf x = (x_1, \ldots, x_d)$ refers to the predictors, and $y$ to the corresponding labels of the response variable. The goal is to construc the unknown functional dependence $\mathbf{x}\overset{f}{\rightarrow}y$ with estimate $\hat{f}(\mathbf{x})$, such that some specific loss function $\Psi(y, f)$ is minimized, $\\ \hat{f}(x) = y, \\ 
   \hat{f}(x) = \arg\min_{f(x)}E_x[E_y[\Psi(y, f(x))]|x]$,where $E_y[\Psi(y, f(x))]$ is the expected loss and $E_x[~]$ is the expectation over all dataset.  We can restrict the function search space to a parametric family of functions $f(x, \theta)$, which will change the function optimization into parametric estimation 
-=======
-(based on Natekin and Alois, 2013) Consider the data set $(\mathbf x, y)_{i = 1}^N$, where $\mathbf x = (x_1, \ldots, x_d)$ refers to the predictors, and $y$ to the corresponding labels of the response variable. The goal is to construc the unknown functional dependence $\mathbf{x}\overset{f}{\rightarrow}y$ with estimate $\hat{f}(\mathbf{x})$, such that some specific loss function $\Psi(y, f)$ is minimized, 
-  \begin{equation}
-  \hat{f}(x) = y, \\ 
-  \hat{f}(x) = \arg\min_{f(x)}E_x[E_y[\Psi(y, f(x))]|x],
-  \end{equation}
- where $E_y[\Psi(y, f(x))]$ is the expected loss and $E_x[~]$ is the expectation over all dataset.  We can restrict the function search space to a parametric family of functions $f(x, \theta)$, which will change the function optimization into parametric estimation 
->>>>>>> origin/master
-   \[\hat{f}(x) = f(x, \hat{\theta}), \\ \hat{\theta} = \arg\min_{\theta}E_x[E_y[\Psi(y, f(x, \theta))]|x], \label{E1}\]
+
+$hat{f}(x) = f(x, \hat{\theta}), \\ \hat{\theta} = \arg\min_{\theta}E_x[E_y[\Psi(y, f(x, \theta))]|x], \label{E1}$
  Given $M$ iterations, the parameter estimates can be written in the incremental form 
  $\hat{\theta} = \sum_{i =1}^M\hat{\theta}_i$
  
