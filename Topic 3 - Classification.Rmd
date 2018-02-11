@@ -43,7 +43,9 @@ output:
  
 # K-Nearest Means 
   
-  + Reference: https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm and **Element of Statistical Learning**.
+  + Reference: 
+    + https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm 
+    + **Element of Statistical Learning**.
   + Algorithm
     + calculate the pairwise distances (<span style = "color:red">Euclidian distance</span> for continuous variable, <span style = "color:red">hamming distance [overlap metric]</span> for discrete variable)
     + for sample $i$, get its $k$-nearest neighbors
@@ -105,10 +107,6 @@ output:
 # Support Vector Machine        
         
         
-# Boosting for logistic regression
-  + Reference: https://web.stanford.edu/~hastie/Papers/AdditiveLogisticRegression/alr.pdf 
-
-
 # Gradient Boosting Machines
 
 ## References
@@ -118,13 +116,78 @@ output:
  + Schapire, R. E. and Freund, Y. (2012). Boosting: Foundations and Algorithms. MIT Press.
  + http://www.chengli.io/tutorials/gradient_boosting.pdf
  + [Natekin, Alexey, and Alois Knoll. "Gradient boosting machines, a tutorial." Frontiers in neurorobotics 7 (2013): 21.](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3885826/)
+ + [Friedman, Jerome, Trevor Hastie, and Robert Tibshirani. "Additive logistic regression: a statistical view of boosting (with discussion and a rejoinder by the authors)." The annals of statistics 28.2 (2000): 337-407.](https://web.stanford.edu/~hastie/Papers/AdditiveLogisticRegression/alr.pdf for more detail)
  + `R` package [`gbm`](https://cran.r-project.org/web/packages/gbm/)
  
 ## Method 
+  (based on Natekin and Alois, 2013) Consider the data set $(\mathbf{x}, y)_{i = 1}^N$, where $\mathbb{x} = (x_1, \ldots, x_d)$ refers to the predictors, and $y$ to the corresponding labels of the response variable. The goal is to construc the unknown functional dependence $\mathbf{x}\overset{f}{\rightarrow}y$ with estimate $\hat{f}(\mathbf{x})$, such that some specific loss function $\Psi(y, f)$ is minimized
+  \[\hat{f}(x) = y, \\ \hat{f}(x) = \arg\min_{f(x)}E_x[E_y[\Psi(y, f(x))]|x], \]
+  
+ where $E_y[\Psi(y, f(x))]$ is the expected loss and $E_x[~]$ is the expectation over all dataset.  We can restrict the function search space to a parametric family of functions $f(x, \theta)$, which will change the function optimization into parametric estimation 
+   \[\hat{f}(x) = f(x, \hat{\theta}), \\ \hat{\theta} = \arg\min_{\theta}E_x[E_y[\Psi(y, f(x, \theta))]|x], \label{E1}\]
+ Given $M$ iterations, the parameter estimates can be written in the incremental form 
+ \[\hat{\theta} = \sum_{i =1}^M\hat{\theta}_i\]
+ 
+  In the boosting methods, the optimization is held out in the function space. That is 
+  \[\hat{f}(x) = \hat{f}^M(x) = \sum_{i = 0}^M\hat{f}_i(x)\]
+  where $M$ is the number of iterations $\hat{f}_0$ is the initial guess and $\{\hat{f}_i\}_{i=1}^M$ are the function increaments, also called "boosts." For the function estimate at $t$-th iteration, the optimization is defined as 
+  \[\hat{f}_t\leftarrow \hat{f}_{t-1} +\rho_th(x, \theta_t), \\
+  (\rho_t, \theta_t) = \arg\min_{\rho, \theta}\sum_{i = 1}^N\Psi(y_i, \hat{f}_{t-1}) + \rho h(x_i, \theta)\]
+ The simplest and most frequently used procedure is steepest gradient descent. Suppose we have a base-learner $h(x,\theta)$, it is proposed that the new function $h(x,\theta_t)$ be most parallel to the negative gradient $\{g_t(x_i)\}_{i =1}^N$ with 
+ \[g_t(\mathbf{x}) = E_y[\frac{\partial \Psi(y, f(x))}{\partial f(x)}|x]_{f(x)= \hat{f}^{t-1}(x)}\]
+Therefore, teh exact form of the derived algorithm with all the corresponding formulas will heavily depend on the design choice of $\Psi(y, f)$ and $h(x, \theta)$.
+
+### Loss functions
+  + Continuous response, $y\in R$.
+    + Gaussian $L_2$ loss function
+    + Laplace $L_1$ loss function
+    + Huber loss function $\delta$ specified
+    + Quantile loss function, $\alpha$ specified
+  + Categorical response, $y\in\{0, 1\}$
+    + Binomial loss function
+    + Adaboost loss function 
+  + Other families of response variable
+    + Loss functions for survival models
+    + Loss functions for counts data
+    + Custom loss functions
+
+### Base learner
+  + Linear models
+    + Ordinary linear regression
+    + Ridge penalized linear regression
+    + Random effects
+  + Smooth models
+    + P-splines
+    + Radial basis functions
+  + Decision trees
+    + Decision tree stumps
+    + Decision trees with arbitrary interaction depth
+  + Other models
+    + Markov Random Fields
+    + Wavelets
+    + Custom base-learner functions
 
 ## Relative Influence
+This is the available in the decision-tree ensembles. Let's define the influence of the variable $j$ in a single tree $T$. Consider the tree has $L$ splits, therefore we are looking for all the non-terminal nodes from the root to the $L-1$ level of the tree. Then the variable influence is defined as 
+\[Influence_j(T) = \sum_{i =1 }^{L-1}I_i^21(S_i = j)\]
+which is based on the number of times a variable is selected for splitting. The term $I_i^2$ is the emprirical squared improvement when splitting variable $S_i$ is $j$. To obtain the overall influence of variable $j$, this metric should be averaged over all trees
+\[Influence_j = \frac{1}{M}\sum_{i=1}^MInfluence_j(T_i)\]
+Several notes:
+
+  + The influences are further standardized so that they sum up to 100\%.
+  + Influences do not provide any explanations about how the variable actually affect the response.
+  + The resulting variables can be used for variable selections.
+  
+## Drawbacks
+
+  + Memory consumption: The cost of storing a predictive model depends on the number of boosting iterations.
+  + Evaluation speed: to use the fitted GBM to obtain predictions, one has to evaluate all the base-learners in the ensemble.
+  + Not parallelization friendly: the learning procedure is sequential.
  
- 
+## Application
+  An example is boosted logistic regression. 
+
+
 
   
   
