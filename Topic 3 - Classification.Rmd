@@ -120,7 +120,7 @@ output:
  + `R` package [`gbm`](https://cran.r-project.org/web/packages/gbm/)
  
 ## Method 
-  (based on Natekin and Alois, 2013) Consider the data set $(\mathbf{x}, y)_{i = 1}^N$, where $\mathbb{x} = (x_1, \ldots, x_d)$ refers to the predictors, and $y$ to the corresponding labels of the response variable. The goal is to construc the unknown functional dependence $\mathbf{x}\overset{f}{\rightarrow}y$ with estimate $\hat{f}(\mathbf{x})$, such that some specific loss function $\Psi(y, f)$ is minimized, 
+  (based on Natekin and Alois, 2013) Consider the data set $(\mathbf x, y)_{i = 1}^N$, where $\mathbf x = (x_1, \ldots, x_d)$ refers to the predictors, and $y$ to the corresponding labels of the response variable. The goal is to construc the unknown functional dependence $\mathbf{x}\overset{f}{\rightarrow}y$ with estimate $\hat{f}(\mathbf{x})$, such that some specific loss function $\Psi(y, f)$ is minimized, 
   \begin{equation}
   \hat{f}(x) = y, \\ 
   \hat{f}(x) = \arg\min_{f(x)}E_x[E_y[\Psi(y, f(x))]|x],
