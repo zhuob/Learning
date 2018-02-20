@@ -121,16 +121,12 @@ A support vector machine (SVM) is a representation of the examples as points in 
  + The $\xi_i$'s can be viewed as the "errors" of the *fat* decision boundary.
  + Parameter $c$ controls the tradeoff
     + Large $c$: $\xi_i$'s incur large penalty, so the optimal solution will try to avoid tehm.
-    + Small $c$: small cost for $\xi_i$'s, we can sacrifice some training examples to have a larger classifier margin.
+    + Small $c$: small cost for $\xi_i$'s, we can sacrifice some training examples to have a larger classifier margin
 
 Solution to SVM with linear kernel
 
   + No soft margin: $W = \sum_{i=1}^N\alpha_iy^ix^i, s.t. \sum_{i=1}^N\alpha_iy^i=0$
-<<<<<<< HEAD
-  + With soft margin: $W = \sum_{i=1}^N\alpha_iy^ix^i, s.t. \sum_{i=1}^N\alpha_iy^i=0~and~0\leq \alpha_i \leq c$   
-=======
-  + With soft margin: $W = \sum_{i=1}^N\alpha_iy^ix^i, s.t. \sum_{i=1}^N\alpha_iy^i=0~and~0\leq \alpha_i \leq c$.    
->>>>>>> ddaa796db1069f9b4991a4680f273cd78c4d1bd6
+  + With soft margin: $W = \sum_{i=1}^N\alpha_iy^ix^i, s.t. \sum_{i=1}^N\alpha_iy^i=0~and~0\leq \alpha_i \leq c$
   
 # Gradient Boosting Machines
 
