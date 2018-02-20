@@ -126,7 +126,11 @@ A support vector machine (SVM) is a representation of the examples as points in 
 Solution to SVM with linear kernel
 
   + No soft margin: $W = \sum_{i=1}^N\alpha_iy^ix^i, s.t. \sum_{i=1}^N\alpha_iy^i=0$
+<<<<<<< HEAD
   + With soft margin: $W = \sum_{i=1}^N\alpha_iy^ix^i, s.t. \sum_{i=1}^N\alpha_iy^i=0~and~0\leq \alpha_i \leq c$   
+=======
+  + With soft margin: $W = \sum_{i=1}^N\alpha_iy^ix^i, s.t. \sum_{i=1}^N\alpha_iy^i=0~and~0\leq \alpha_i \leq c$.    
+>>>>>>> ddaa796db1069f9b4991a4680f273cd78c4d1bd6
   
 # Gradient Boosting Machines
 
