@@ -103,9 +103,31 @@ output:
         +  Test error continues to decrease even after training error goes to 0.
         + Sensitive to noise and outliers, as compared to bagging that is robust to outliers.
         
-# Support Vector Machine        
-        
-        
+# Support Vector Machine   
+A support vector machine (SVM) is a representation of the examples as points in space, mapped such that the examples of the separate categories are divided by a clear gap that is as wide as possible. In addition to performing linear classification, SVMs can efficiently perform non-linear classification using the kernel trick, mapping their inputs into high-dimentional feature spaces.
+
+## Method
+  + Given a linear decision boundary defined by $W^Tx+b = 0$
+  + The **functional margin** for a point $(x^i, y^i)$ is defined as $y^i(W^Tx^i + b)$ 
+  + For a fixed $W$ and $b$, the larger the functional margin, the more confident we have about the prediction. 
+  + Define the geometric margin of a point $(x, y)$ w.r.t. $W^Tx+b=0$ to be $\gamma = y(W^Tx + b)/||w||$, which measures the geometric distance between the point and the decision boundary.
+  + For the training set, teh geometric margin of a decision boundary is defined as $\gamma = \min\{\gamma^{i}\}_{i=1}^{N}$
+  + Rearranging the terms, the optimization problem will become $\min_{W, b}||W||^2$ s.t. $y^i(WX^i + b)\geq 1, i = 1, \ldots, N$
+  
+ What if the data is not linearly separable? We could use "Soft Margin". 
+ 
+ + We can allow the margin to be less than 1: $y^i(Wx^i +b)\geq 1-\xi_i$ and $\xi_i\geq 0$, and the objective changes to $\min_{W, b}||W||^2 + c \sum_{i=1}^N\xi_i$.
+ + This could alow some functional margins to be $<1$ (could even be $<0$).
+ + The $\xi_i$'s can be viewed as the "errors" of the *fat* decision boundary.
+ + Parameter $c$ controls the tradeoff
+    + Large $c$: $\xi_i$'s incur large penalty, so the optimal solution will try to avoid tehm.
+    + Small $c$: small cost for $\xi_i$'s, we can sacrifice some training examples to have a larger classifier margin.
+
+Solution to SVM with linear kernel
+
+  + No soft margin: $W = \sum_{i=1}^N\alpha_iy^ix^i, s.t. \sum_{i=1}^N\alpha_iy^i=0$
+  + With soft margin: $W = \sum_{i=1}^N\alpha_iy^ix^i, s.t. \sum_{i=1}^N\alpha_iy^i=0~and~0\leq \alpha_i \leq c$   
+  
 # Gradient Boosting Machines
 
 ## References
@@ -119,8 +141,9 @@ output:
  + `R` package [`gbm`](https://cran.r-project.org/web/packages/gbm/)
  
 ## Method 
- + (based on Natekin and Alois, 2013) Consider the data set $(\mathbf{x}, y)_{i = 1}^N$, where $\mathbf x = (x_1, \ldots, x_d)$ refers to the predictors, and $y$ to the corresponding labels of the response variable. The goal is to construc the unknown functional dependence $\mathbf{x}\overset{f}{\rightarrow}y$ with estimate $\hat{f}(\mathbf{x})$, such that some specific loss function $\Psi(y, f)$ is minimized, \[\hat{f}(x) = y,  \hat{f}(x) = \arg\min_{f(x)}E_x[E_y[\Psi(y, f(x))]|x],\]
- where $E_y[\Psi(y, f(x))]$ is the expected loss and $E_x[~]$ is the expectation over all dataset.  We can restrict the function search space to a parametric family of functions $f(x, \theta)$, which will change the function optimization into parametric estimation \[\hat{f}(x) = f(x, \hat{\theta}), \hat{\theta} = \arg\min_{\theta}E_x[E_y[\Psi(y, f(x, \theta))]|x], \label{E1}\]    
+  + based on Natekin and Alois, 2013
+  + Consider the data set $(\mathbf{x}, y)_{i = 1}^N$, where $\mathbf x = (x_1, \ldots, x_d)$ refers to the predictors, and $y$ to the corresponding labels of the response variable. The goal is to construc the unknown functional dependence $\mathbf{x}\overset{f}{\rightarrow}y$ with estimate $\hat{f}(\mathbf{x})$, such that some specific loss function $\Psi(y, f)$ is minimized, \[\hat{f}(x) = y,  \hat{f}(x) = \arg\min_{f(x)}E_x[E_y[\Psi(y, f(x))]|x],\]
+where $E_y[\Psi(y, f(x))]$ is the expected loss and $E_x[~]$ is the expectation over all dataset.  We can restrict the function search space to a parametric family of functions $f(x, \theta)$, which will change the function optimization into parametric estimation \[\hat{f}(x) = f(x, \hat{\theta}), \hat{\theta} = \arg\min_{\theta}E_x[E_y[\Psi(y, f(x, \theta))]|x], \label{E1}\]    
   Given $M$ iterations, the parameter estimates can be written in the incremental form 
  \[\hat{\theta} = \sum_{i =1}^M\hat{\theta}_i\]
   In the boosting methods, the optimization is held out in the function space. That is 
