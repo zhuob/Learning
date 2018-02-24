@@ -6,3 +6,17 @@
 *.html
 
 Reference/randomForest.pdf
+
+*.log
+
+*.aux
+
+*.nav
+
+*.out
+
+*.snm
+
+*.gz
+
+*.toc

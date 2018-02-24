@@ -1,0 +1,514 @@
+---
+title: "Learning from Data: Classification of Adverse Event by Biomarkers"
+author: "Bin Zhuo"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+header-includes: 
+   - \usepackage{color}
+   - \usepackage{sectsty} \sectionfont{\centering }
+   - \usepackage{pdflscape}
+   - \newcommand{\blandscape}{\begin{landscape}}
+   - \newcommand{\elandscape}{\end{landscape}}
+output: 
+  pdf_document:
+    citation_package: natbib
+    latex_engine: pdflatex
+    number_section: true
+    fig_caption: yes
+bibliography: reference.bib
+biblio-style: apsr
+# abstract: " In this project, data collected from a clinical study are used to predict the occurrence of adverse event (AE) and to identify biomarkers that may contribute to AE. For each subject, 20 biomarkers were measured on a weekly basis, up to 8 weeks. The outcome is binary -- whether the subject experienced AE during the course of the study. 
+# 
+# Dimension reduction and machine learning techniques are used to analyze the data. Specifically, principle component analysis (PCA) is used to collapse the longitudinal biomarker measurements into one dimension. Then, the collapsed data is split into training and testing set, The biomarkers that may contribute to the occurrence of AE are identified from the best classifier. 
+# 
+# (Results summarized here)..."
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+<!-- https://stats.stackexchange.com/questions/204646/how-to-model-longitudinal-big-data -->
+
+# Introduction
+
+Two hundred (200) subjects were enrolled in a clinical trial and took a pill daily for a total of eight weeks. Twenty biomarker were measured for each participant, both at baseline (Week 0) and on a weekly basis postdose.  Some subjects experienced adverse event (AE) during the course of the study, and dosing was immediately terminated for those who had AE although collection of biomarker data continued. Data collected up to the time point of AE or till the end of study are used to the questions of interest as follows:
+<!-- In this clinical study, two hundred (200) subjects were enrolled and asked to take a pill daily for 8 weeks. Biomarker measurements (M1--M20) were collected before the subjects started taking the drug (Week 0) and on weekly basis thereafter. Some subjects experienced adverse event (AE) while on study. Subjects who had AE were dropped from the study. -->
+    \begin{itemize}{
+      \item[(1)] Find biomarkers that are changing as a result of treatment
+      \item[(2)] Predict AE based on historical biomarker data
+      \item[(3)] Identify biomarkers that are related to AE
+    
+    }
+    \end{itemize}
+
+# Method
+I applied non parametric tests to the cleaned data (see Section 2.1) to address (1), and machine learning tools to the dimensionally reduced data (see Section 2.3) to explore (2) and (3).
+
+The following packages were used for this project. Some of the code is suppressed in this report, and available in the source file.
+
+```{r, message=FALSE, warning=FALSE}
+## Load the packages 
+library(dplyr)   # package for data manipulation
+library(tidyr)   # package for data manipulation
+library(ggplot2) # package for visualization
+library(caret )  # package for classification
+library(xtable)  # pakcage for tabulation
+```
+
+## Data Cleaning and Manipulation
+
+Throughout this report, `AE` is coded as 1 if a subject experienced AE during the study, and 0 otherwise. Then change from baseline (`CHG`), fold change (`FC`) as well as log FC (`logFC`) are calculated for each biomarker at each time point, using the following transformation 
+\[CHG_{i} = M_{i} - M_{0},  ~~~~FC_i = \frac{M_i + 0.1}{M_0 + 0.1}, ~~~~logFC_i = log(FC_i)\]
+where $M_i$ is the value of marker $M$ at time $i$, $M_0$ the corresponding baseline value at Week 0.
+
+```{r, cache=FALSE, message=F, warning=F, echo=FALSE}
+
+setwd("C:/Users/zhuob01/Desktop/Project/")
+source("C:/Users/zhuob01/Desktop/Project/functions.R")
+
+# read the data
+ae <- read.csv("AE times.csv") %>% rename(SUBJECT = ID)
+biomarker <- read.csv("Biomarker Data.csv", stringsAsFactors = F) 
+
+## separate biomarker data into baseline and postdose
+baseline <- biomarker %>% filter(WEEK == 0) %>% 
+                          rename(BL = MARKER.VALUE) %>% 
+                          select(-WEEK)
+postdose <- biomarker %>% filter(WEEK != 0)
+
+# merge them and 
+# change the biomarker names to consistent format (e.g., M1 - M01), 
+# for ease of visualization and analysis
+
+b1 <- left_join(baseline %>% arrange(SUBJECT, MARKER.NAME), 
+                postdose %>% arrange(SUBJECT, MARKER.NAME), 
+                by = c("SUBJECT","MARKER.NAME")) %>% 
+             mutate(MARKER.NAME = ifelse(nchar(MARKER.NAME)==2, 
+                              gsub("M", "M0", MARKER.NAME), MARKER.NAME))
+## combine with AE data
+b2 <- right_join(ae %>% arrange(SUBJECT), b1, by = "SUBJECT") 
+
+## remove measurements collected after AE,
+## Calculate change from baseline, FC, and logFC
+b3 <- b2 %>% filter(WEEK <= EVENT.TIME | is.na(EVENT.TIME)) %>%
+             arrange(SUBJECT, WEEK, MARKER.NAME) %>%
+             mutate(FC = (MARKER.VALUE + 0.1)/(BL + 0.1), 
+                    CHG = MARKER.VALUE - BL, 
+                    logFC = log(FC), 
+                    AE = as.factor(ifelse(is.na(EVENT.TIME), 0, 1))) 
+
+## transpose for PCA 
+b4 <- b3 %>% select(SUBJECT, AE, EVENT.TIME, MARKER.NAME, WEEK, FC) %>% 
+             spread(key = WEEK, value = FC)
+
+```
+
+This is the first few lines of the cleaned data.
+\newpage
+```{r, echo=F}
+head(b3)
+```
+
+
+## Explanatory Analysis
+The first step of explanatory analysis is to visualize the predictors by outcome (whether subject experienced AE). As an attempt, I tried box plot (for individual observations) and line plot (for averaged biomarker by time and outcome), shown in Fig 1 and Fig 2. Fig 1 visually presents FC of all the biomarker data, with a few potential outliers for most of the biomarkers, suggesting a log transformation may be beneficial. Since some of the outliers were much larger in magnitude, log-transformation does not appear to alleviate the concern. In the appendix, I created figures similar to Fig 1 and Fig 2, but using log transformed FC (see Fig X1 and Fig X2). Therefore, the outliers were included in the analysis and no diagnosis was done to them.
+
+Fig 2 gives a more clear picture of how each biomarker is changing over time, and how they differ between the two outcomes (i.e., 1 for AE and 0 otherwise). I have the following observations:
+\begin{itemize}
+  \item There is strong positive correlation between time and average FC of biomarkers `M1-M3`.
+  \item Biomarkers `M3`, `M7`, `M8`, `M13`, `M16`, `M17` and `M20` appear to be well separated by the dichotomized outcomes, suggestive of their relation to AE. 
+\end{itemize}
+
+```{r, echo = F, fig.height=7, fig.width=7}
+
+## whether there's correlation among biomarkers
+d1 <- get_correlation(b3, valuetype = "FC", plot_cor = F)
+```
+
+
+Fig 3 shows a heatmap of the pairwise correlation between the biomarkers, suggesting no apparent correlation exist among the fold change of most biomarkers. The maximum correlation is between `M1` and `M2`, with value `r round(max(d1[d1<1]), 4)`.
+
+```{r, echo = F}
+## visualize the biomarkers over time
+p1 <- ggplot(data = b3, aes(x = WEEK, y = FC)) + 
+        geom_boxplot(aes(color = AE)) +
+        facet_wrap(~MARKER.NAME, scale = "free") + 
+        labs(title = "Fig 1: Biomarkers over time by outcome", ylab="Fold Change") + 
+        theme(legend.position = "top")
+
+## visualize the biomarkers over time, averaged
+p2 <- BiomakerVStime(dat = b3, valuetype = "FC", fignum =2)
+
+pX1 <- ggplot(data = b3, aes(x = WEEK, y = logFC)) + 
+        geom_boxplot(aes(color = AE)) +
+        facet_wrap(~MARKER.NAME, scale = "free") + 
+        labs(title = "Fig X1: Biomarkers over time by outcome", ylab="log Fold Change") + 
+        theme(legend.position = "top")
+
+## visualize the biomarkers over time, averaged
+pX2 <- BiomakerVStime(dat = b3, valuetype = "logFC", fignum ="X2")
+
+```
+
+\blandscape
+```{r, echo=F, fig.height=8, fig.width=12}
+p1
+p2
+```
+\elandscape
+
+```{r, echo = F, fig.height=7, fig.width=7}
+## whether there's correlation among biomarkers
+
+get_correlation(b3, valuetype = "FC", plot_cor = T, fignum =3)
+#d1 <- get_correlation(b3, valuetype = "FC", plot_cor = F)
+
+```
+
+## Dimension Reduction
+This data has feature that the biomarkers were collected at multiple time points, but the response variable was obtained only at the end of the study or when the subject was dropped from dosing. However, many of the machine learning methods are developed for cross-sectional rather than longitudinal data analysis. Therefore I was motivated to use dimension reduction techniques to map the longitudinal data into one dimensional space. Specifically, I applied principle component analysis (PCA) to each of the biomarker, and used the score of the first component as the new predictor for that biomarker.   
+
+Let $X_{ij}$ be a measurement taken at time $j$ for a given biomarker of subject $i$, and $\mathbb{X_{N\times T}} = (X_{ij})$. Therefore, by first component of PCA, I'm trying to find a vector $\mathbb{\alpha}$ of length $T$, such that
+\[\mathbb{\alpha} = \arg\max{\frac{(\mathbb{\alpha X})'(\mathbb{\alpha X})}{\mathbb{\alpha}'\mathbb{\alpha}}}\]
+Essentially, PCA is to find a linear combination of the longitudinal measurements that retains max variation in the data. Since some subjects have censored data when they were dropped before the study ended, the PCA procedure is done by grouping subjects based on the number of measurement they had. The following table gives a summary of subjects falling into each category.
+
+```{r results = "asis", echo = F}
+options(xtable.comment = FALSE)
+temp <- b3 %>% select(SUBJECT, EVENT.TIME) %>% distinct() %>% 
+               select(EVENT.TIME) %>% 
+               mutate(output = ifelse(!is.na(EVENT.TIME), paste("WEEK", EVENT.TIME), "NO AE")) 
+  
+t1 <- as.data.frame(table(temp$output)) %>% spread(key = Var1, value = Freq)
+print(xtable(t1, caption = "Number of subjects experienced AE by time"), include.rownames=FALSE, type = "latex") 
+```
+
+
+I pulled subjects who experienced AE at Week 8 and those who did not have AE together for PCA analysis, as they have the same number of measurements for each biomarker. As a result, the data cleaned at the first step is collapsed into a data of $200\times 21$, where each row represents a subject, and column 1 is the outcome, and each of the rest columns the score of PCA. This data is the input for the machine learning models, to be described next. 
+
+```{r, echo = F}
+
+## run PCA by cencoring time
+new_dat <- pca_all(dat = b3, valuetype = "FC")
+
+# this is the final data
+final <- new_dat %>% select(SUBJECT, AE, EVENT.TIME, MARKER.NAME, SCORE) %>%
+                     spread(key = MARKER.NAME, value = SCORE) %>% 
+                     select(-SUBJECT, -EVENT.TIME)
+
+```
+
+
+
+## Classification 
+
+After the dimensionally reduced data is obtained, various machine learning tools are readily applicable. The data was split by 3:1 into `training` and `testing` set, where the former was used to train the best classifier and the latter to test the accuracy of the classifier trained. Ten-fold cross-validation was used in the training process.
+
+```{r}
+# split the data into training and testing set
+inTraining <- createDataPartition(final$AE, p = .75, list = FALSE)
+training <- final[ inTraining,]
+testing  <- final[-inTraining,]
+
+
+fitControl <- trainControl(# 10-fold CV
+                method = "repeatedcv",
+                number = 10,
+                # repeated ten times
+                repeats = 10)
+
+```
+
+
+### Candidate Classifiers
+In this report, I chose the following methods to train the model:
+
+\begin{itemize}
+  \item Boosted Logistic Regression (BLR)
+  \item Random Forest (RF)
+  \item Support Vector Machine with Linear Kernel (SVM-LK)
+  \item Stochastic Gradient Boosting (GBM)
+\end{itemize}
+
+### Parameter Tuning
+The following table gives a description of how each classifier was tuned.
+\newpage
+
+|  Model          | Tuning Parameter   | Search Grid
+|-----------------|--------------------|-------------------
+| BLR             | `nIter`: # Boosting Iterations            | `10 to 300 by 10`
+| RF              | `mtry`: # Randomly Selected Predictors             | `1 to 15 by 1`
+| SVM-LK          | `cost`: Cost       | `0.01, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10`
+| GBM             | `interaction.depth`: Max Tree Depth  | `1 to 5 by 1`
+|                 | `n.trees`: # Boosting Iterations         | `50 to 500 by 50`
+|                 | `shrinkage`:  Shrinkage                |`0.001, 0.01, 0.1`
+|                 | `n.minobsinnode`: Min. Terminal Node Size   | `10 to 15 by 1`
+
+Table: Parameter Configuration and Tuning
+
+### Model Performance Evaluation
+
+The classifiers are evaluated by accuracy and Cohen's Kappa score [@cohen1968weighted]. Kappa can take value between -1 and 1, with 0 indicating no agreement between the rates, and larger positive values better agreement. Landis and Koch [@landis1977measurement] discussed in detail about the usage of kappa. Kappa can usually improve the quality of the final model in problems where there are a low percentage of samples in one class. In this report, a kappa value of $\geq 0.4$ (moderate to almost perfect agreement) is desired. Specificity and sensitivity were not used to evaluate the model performance during the training step, but were presented in the `testing` data. 
+
+
+## Biomarker Identification 
+All of the four classifiers produce variable importance metric, which will be used to identify biomarkers of interest. The biomarkers that have higher importance metric will be considered as related to AE. 
+
+# Results 
+In this part, I responded to each of the questions listed in Section 1, and summarized the main findings from the data. 
+
+## Identifying Biomarkers Responding to Treatment
+To find biomarkers that are changing as a result of treatment, I first defined what is "change". Because each subject was dosed daily for 8 weeks, "change" was interpreted in the following two ways:
+\begin{itemize}
+  \item[C1:] Absolute change: whether 'CHG' or 'logFC' is different from 0, or 'FC' is different from 1, since both are relative to baseline
+  \item[C2:] Change of trend: whether a given biomarker is changing over time because of repeated dose.
+\end{itemize}
+
+As has shown in Fig 1, there are quite a few outliers for each of the biomarkers. To avoid the consequence of outliers, I chose non-parametric approaches which does not depend on the absolute value of the biomarkers. Throughout this report, I chose `FC` as the proper transformation, but the result should not change in the context of non-parametric test. I created an binary variable `IND` with two possible values: `IND = 1` if `FC > 1` and `IND = -1` if `FC <= 1`. For C1, I used *Wilcoxon Signed Rank test* to evaluate whether `FC` is different from 1; For C2, I used *Chi-square test* to examine independence, that is, whether `FC` is changing over time. Table 3 shows the p-values of each biomarker for C1 and C2.
+
+Not surprisingly, biomarkers `M1-M4` are significantly related to time, and all biomarkers have significant absolute change (which may not be of interest). Of course, Chi square test only concludes that these 4 biomarkers are not independent of time. Although we could further test linearity between `M1-M4` and time using linear models, it was not of primary interest and thus not done here.  
+
+```{r results = "asis", echo = F}
+r1 <- test_independence(b3, valuetype = "FC")
+print(xtable(r1, caption = "Non-parametric test of C1 and C2", digits = 4), type = "latex", include.rownames=FALSE) 
+```
+
+
+## Predicting the Occurrence of AE with Biomarker data
+The best tuning parameters were identified from the best models for each classifier, with results listed in Table 4 below. 
+
+
+```{r, echo=F, message=F}
+## tuning parameter is niter
+tunegrid <- expand.grid(.nIter = seq(1, 150, by = 5))
+set.seed(5)
+blr_fit <- train(AE ~ ., data = training, 
+                 method = "LogitBoost", 
+                 trControl = fitControl,
+                 tuneGrid = tunegrid,
+                 tuneLength = 30,
+                 verbose = FALSE)
+
+
+
+## random forest
+tunegrid <- expand.grid(.mtry=c(1:15))
+
+set.seed(7)
+
+rf_fit <- train(AE ~ ., data = training, 
+              method = "rf", 
+              metric = "Accuracy", 
+              tuneGrid = tunegrid,
+              trControl = fitControl)
+
+
+## support vector machine
+set.seed(8)
+grid <- expand.grid(C = c(0.01, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10))
+svm_fit <- train(AE ~ ., data = training, 
+              method = "svmLinear",
+              trControl = fitControl, 
+              tuneGrid = grid,
+              tuneLength = 30)
+
+
+## explains what each parameter means
+gbmGrid <-  expand.grid(interaction.depth = 1:5, # 1 implies an additive model, 
+                        # 2 implies a model with up to 2-way interactions, etc
+                        n.trees = (1:10)*50, 
+                        shrinkage = c(0.001,  0.01, 0.1),
+                        n.minobsinnode = 10:15)
+set.seed(10)
+
+gbm_fit <- train(AE ~ ., data = training, 
+                 method = "gbm", 
+                 trControl = fitControl, 
+                 verbose = FALSE, 
+                 ## Now specify the exact models 
+                 ## to evaluate:
+                 tuneGrid = gbmGrid)
+
+
+## what does Kappa mean?
+## https://datascience.stackexchange.com/questions/1108/kappa-near-to-60-in-unbalanced-110-data-set
+
+## model comparison
+
+resamps <- resamples(list(GBM = gbm_fit,
+                          SVM_LK = svm_fit,
+                          BLR = blr_fit, 
+                          RF = rf_fit))
+
+rlst <- summary(resamps)
+
+
+# get the mean accuracy and mean kappa
+train_accuracy <- rlst$statistics$Accuracy
+train_kappa <- rlst$statistics$Kappa
+ids <- row.names(train_kappa)
+train_accuracy1 <- train_accuracy[ids != "SVM_LK", 4]
+best_train <- names(train_accuracy1)[train_accuracy1 == max(train_accuracy1)]
+train_kappa1 <- train_kappa[ids != "SVM_LK", 4]
+
+## get the parameters that have the best performance
+f1 <- gbm_fit$finalModel
+params_gbm <- c(f1$interaction.depth, f1$n.trees, f1$shrinkage, f1$n.minobsinnode)
+params_svm <- svm_fit$finalModel@param$C # SVM
+params_blr <- as.numeric(blr_fit$finalModel$tuneValue) # blr
+params_rf <- rf_fit$finalModel$mtry # rf
+
+```
+
+|  Model          | Tuning Parameter   | Optimal Value
+|-----------------|--------------------|-------------------
+| BLR             | `nIter`            | `r params_blr`
+| RF              | `mtry`             | `r params_rf`
+| SVM-LK          | `cost`                                         | `r params_svm` 
+| GBM             | `interaction.depth`  | `r params_gbm[1]`
+|                 | `n.trees`        | `r params_gbm[2]`
+|                 | `shrinkage`           |`r params_gbm[3]`
+|                 | `n.minobsinnode`  | `r params_gbm[4]`
+
+Table: Parameter Configuration and Tuning
+
+Next, I examined the performance of all the classifiers with accuracy and kappa. The following boxplot (Fig 4) displays the descriptive statistics of accuracy and kappa. In general, the performance of BLR, GBM and RF are comparable, but SVM-LK is significantly lower.  For those three methods, the mean accuracy achieved in the `training` set ranges from `r min(train_accuracy1)` to `r max(train_accuracy1)`, and the mean kappa from `r min(train_kappa1)` to `r max(train_kappa1)`. The best classifier in terms of both accuracy and kappa is `r best_train`.  
+
+\newpage 
+```{r, echo=F, fig.height=5, fig.width=8}
+
+# get the data of accuracy and Kappa for suammry and visualization
+rl1 <- rlst$values %>% gather(key = Metric, value = Value)
+rl2 <- data.frame(stringr::str_split_fixed(rl1$Metric, "~", 2), rl1$Value)
+names(rl2) <- c("Classifier", "Metric", "Value")
+
+p10<- ggplot(data = rl2, aes(x = Classifier , y = Value)) +
+            geom_boxplot(aes(color = Classifier)) +
+            facet_grid(~Metric, scale = "free") +
+            theme(legend.position =  "top") + 
+            labs(title = "Fig 4: Boxplot of accuracy and Kappa")
+
+p10
+
+```
+
+
+
+
+```{r, echo = F}
+## prediction accuracy
+pred_gbm <- get_prediction(gbm_fit, testing, method = "GBM")
+pred_blr <- get_prediction(blr_fit, testing, method = "BLR")
+pred_svm <- get_prediction(svm_fit, testing, method = "SVM_LK")
+pred_rf <-  get_prediction(rf_fit, testing, method = "RF")
+pred_summary <- bind_rows(pred_blr$summary, pred_rf$summary, 
+                          pred_svm$summary, pred_gbm$summary) %>%
+                select(Classifier, Accuracy, AccuracyNull, AccuracyPValue, Kappa)
+pred_outcome <- bind_rows(pred_blr$outcome, pred_rf$outcome, 
+                          pred_svm$outcome, pred_gbm$outcome) %>%
+                    mutate(Truth = as.factor(Reference),
+                           Prediction = as.factor(Prediction))
+
+#    
+pred1 <- pred_summary %>% filter(Classifier != "SVM_LK")        
+max_accuracy <- max(pred1$Accuracy)      
+min_accuracy <- min(pred1$Accuracy)
+best_pred <- pred1$Classifier[pred1$Accuracy == max_accuracy]
+```
+
+
+How accurate can these classifiers be in the `testing` set? Prediction outcome for each classifier is obtained by using the corresponding model with optimal tuning parameter. **Table 5** shows that `r best_pred` achieves the highest performance in the `testing` set, with an accuracy of `r round(max_accuracy, 4)`.
+
+```{r results = "asis", echo = F}
+print(xtable(pred_summary, caption = "Prediction Accuracy of Classifiers"), type = "latex", digits = 3, include.rownames=FALSE) 
+
+```
+
+Fig 5 shows the predicted versus actual outcome for each of the trained classifier. Note that for BLR, the total number of outcome could be less than the size of training set (not necessarily shown in this figure). Tracking down to the training stage, it may be because of the cross-validation procedure. Since only 30% subjects had AE, it was possible that at one re-sampled data, the outcomes of `AE` were all 0, which trigged the warning "`There were missing values in resampled performance measures`". At this time, I wasn't able to fix this problem in the code.
+
+```{r, echo = F}
+ggplot(data = pred_outcome, aes(x = Truth, y = Prediction)) + 
+      geom_text(aes(label = Freq, color = Classifier), size = 8) + 
+      facet_wrap(~Classifier) 
+```
+
+
+## Identifying Biomarkers related to AE
+
+```{r, echo = F}
+## get the importance of each predictor 
+
+importance_gbm <- get_importance(gbm_fit, method = "GBM")
+importance_blr <- get_importance(blr_fit, method = "BLR")
+importance_svm <- get_importance(svm_fit, method = "SVM_LK")
+importance_rf <- get_importance(rf_fit, method = "RF")
+dfs <-list(importance_blr, importance_rf, importance_svm, importance_gbm)
+importance_all <- plyr::join_all(dfs, by = "Biomarker")
+
+var_importance <- importance_all %>% select(Biomarker, ends_with("rank")) %>%
+                  arrange(Biomarker)
+## get average rank and recommend the first 4
+var_importance1 <- var_importance %>% 
+              mutate(AveRank = (BLR_rank + RF_rank + SVM_LK_rank + GBM_rank)/4, 
+                     rank_new = rank(AveRank,  ties.method= "first"))
+biomarker_interest <- var_importance1$Biomarker[var_importance1$rank_new <= 4]
+```
+
+The nice feature of these models implemented in R package `caret` is that they can return a metric of variable importance. **Table 6** below is the ranking of biomarkers by their relative importance in the corresponding model. Biomarkers "`r biomarker_interest`" have higher average ranking in general, and thus are worth more investigation in practice. While other biomarkers are highly ranked in one method, they do not appear to be important in other methods. Ultimately, choosing the best biomarker needs biological experts' input.
+
+
+
+
+```{r results = "asis", echo=F, message=F}
+
+print(xtable(var_importance, caption = "Rank of Variable Importance by Different Classifiers"), digits =0,  type = "latex", include.rownames=FALSE) 
+
+```
+
+
+\blandscape
+```{r, echo=F, fig.height=8, fig.width=12}
+## why some biomarkers are important, not intuitively
+view_pca <- final %>% gather(key= Biomarker, value = Score, -AE) 
+
+pX <- ggplot(data = view_pca, aes(x = Biomarker, y = Score)) + 
+        geom_boxplot(aes(color = AE)) + 
+        facet_wrap(~Biomarker, scale = "free")
+
+```
+\elandscape
+
+# Conclusion and Discussion
+
+In this project, I applied dimension reduction and machine learning tools to study 20 biomarkers and their relation to AE, using data collected from a clinical study. I used nonparametric test to find biomarkers that are changing as a result of treatment. I found that all biomarkers have significant change from Week 0, and additionally, `M1-M4` show increasing trend with time. I leveraged PCA to reduce the longitudinal data into one dimension, after which the data is suitable as input for classification. I implemented four machine learning techniques (i.e., RF, BLR, SVM-LK, and GBM) to train the data, and achieved an accuracy of `r max(train_accuracy1)` in the `training` set by `r best_train`, and that of `r round(max_accuracy, 4)` by `r best_pred` in the `testing` set. I used the variable importance ranking generated from each classifier to identify the biomarkers that are potentially related to AE. I suggested biomarkers `r biomarker_interest` be investigated for further evidence of relation to AE.  
+
+While these classifiers gives somewhat satisfactory performance, there still may be room to improve. For example, SVM with other kernels (e.g., polynomial kernel, exponential string kernel) may render improved performance over SVM-LK. On the other hand, many other tools for classification are available and worth trying,  for example,  SIDES [@lipkovich2017tutorial].
+
+
+Apart from dimension reduction technique used here, other attempts have been made to address classification problems in the context of longitudinal data. For example, one may opt to use data from a single time point, or to average the longitudinal data over time, but either way would suffer from substantial information loss. While keeping only the first component of PCA in this study also causes loss of information, the loss is minimized in the sense that first component retains the maximum variation in the data. 
+
+For transformation of data, I tried all of the three forms `FC`, `logFC`, `CHG`. As a matter of fact, `FC` gives the highest accuracy in both training and testing set. While `logFC` is slightly better than `CHG`, their accuracy drops about 10\% as compared to `FC`. This evaluation can be easily done by switching `valuetype` between the three forms in the `pca_all()` function before PCA was done.
+
+
+Interestingly, Chen and Bowman [@chen2011novel] developed a support vector machine classifier for this unique type of problem. The basic idea is that the separating function (or hyperplane) of SVM is defined as
+\[h(\mathbf{x}) = \mathbf{w}*(\mathbf{x\beta}^T) + b\]
+instead of $h(\mathbf{x}) = \mathbf{w}*\mathbf{x}^T + b$ that is traditionally used in SVM. An iterative procedure is used to estimate the parameter vector $\mathbf{\beta}$ and $\mathbf{\alpha}$ by quadratic programming. Due to time constrain, this method was not considered in this report, but is definitely worth trying in the future.
+
+
+
+## Appendix
+
+\blandscape
+```{r, echo=F, fig.height=8, fig.width=12}
+
+pX1
+```
+\elandscape
+
+
+
+\blandscape
+```{r, echo=F, fig.height=8, fig.width=12}
+pX2
+```
+\elandscape
+
