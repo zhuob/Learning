@@ -30,18 +30,12 @@ Table: Confusion Matrix
 
 Denote  `1 = Positive, 0 = Negative` and $\hat{1}$ `= predicted Positive`, and $\hat{0}$ `= predicted Negative`. Then we have the following
 
-  + **True Positive Rate**   
-  \[TPR =P(\hat{Y}=1|Y=1) = \frac{TP}{TP + FN}\]
-  + **False Positive Rate**   
-  \[FPR = P(\hat{Y}=1|Y=0) = \frac{FP}{FP + TN}\]
-  + **Sensitivity**   
-  \[Sensitivity = P(\hat{Y}=1|Y=1) = \frac{TP}{TP + FN}\]
-  + **Specificity**   
-  \[Specificity = P(\hat{Y}=0|Y=0)  = \frac{TN}{FP + TN}\]
-  + **Precision**   
-  \[Precision = P(Y=1|\hat{Y}=1) = \frac{TP}{TP + FP}\]
-  + **Recall**   
-  \[Recall = P(\hat{Y}=1|Y=1) =\frac{TP}{TP + FN}\]
+  + **True Positive Rate**  $TPR =P(\hat{Y}=1|Y=1) = \frac{TP}{TP + FN}$
+  + **False Positive Rate** $FPR = P(\hat{Y}=1|Y=0) = \frac{FP}{FP + TN}$
+  + **Sensitivity** $Sensitivity = P(\hat{Y}=1|Y=1) = \frac{TP}{TP + FN}$
+  + **Specificity** $Specificity = P(\hat{Y}=0|Y=0)  = \frac{TN}{FP + TN}$
+  + **Precision** $Precision = P(Y=1|\hat{Y}=1) = \frac{TP}{TP + FP}$
+  + **Recall** $Recall = P(\hat{Y}=1|Y=1) =\frac{TP}{TP + FN}$
    
 Note that `Recall = True Positive Rate = Sensitivity`, while `FPR = 1-Specificity`.   
    
