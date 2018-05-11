@@ -1,0 +1,80 @@
+---
+title: "Model Evaluation and ROC Curve"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Reference
+
+  + [J Davis and M Goadrich. "The Relationship Between Precision-Recall and ROC Curves." 2006](https://www.biostat.wisc.edu/~page/rocpr.pdf)
+  + [K Hajian-Tilaki. "Receiver Operating Characteristic (ROC) Curve Analysis for Medical Diagnostic Test Evaluation." 2013](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3755824/)
+  + [SH Park et. al. "Receiver Operating Characteristic (ROC) Curve: Practical Review for Radiologists." 2004](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2698108/)
+  + [S Janitza, C Strobl. "An AUC-based permutation variable importance measure for random forests" 2013](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-14-119)
+  + R package [`caret`](http://topepo.github.io/caret/variable-importance.html)
+   
+
+
+# Several definitions
+
+
+|     | Actual Positive| Actual Negative 
+|-----|-----|------ 
+|Predicted Positive|  TP | FP 
+|Predicted Negative|  FN | TN 
+
+Table: Confusion Matrix
+
+Denote  `1 = Positive, 0 = Negative` and $\hat{1}$ `= predicted Positive`, and $\hat{0}$ `= predicted Negative`. Then we have the following
+
+  + **True Positive Rate**   
+  \[TPR =P(\hat{Y}=1|Y=1) = \frac{TP}{TP + FN}\]
+  + **False Positive Rate**   
+  \[FPR = P(\hat{Y}=1|Y=0) = \frac{FP}{FP + TN}\]
+  + **Sensitivity**   
+  \[Sensitivity = P(\hat{Y}=1|Y=1) = \frac{TP}{TP + FN}\]
+  + **Specificity**   
+  \[Specificity = P(\hat{Y}=0|Y=0)  = \frac{TN}{FP + TN}\]
+  + **Precision**   
+  \[Precision = P(Y=1|\hat{Y}=1) = \frac{TP}{TP + FP}\]
+  + **Recall**   
+  \[Recall = P(\hat{Y}=1|Y=1) =\frac{TP}{TP + FN}\]
+   
+Note that `Recall = True Positive Rate = Sensitivity`, while `FPR = 1-Specificity`.   
+   
+# ROC curve
+
+Receiver Operator Characteristics (ROC) curves are commonly used to present results for binary decision problems in machine learning. 
+
+## What is it?
+
+ + In diagnostic test with dichotomous outcome, the evaluation usually uses sensitivity and specificity as measures of test accuracy. 
+ + In this setting, the test results are reported in continuous scale, and thus the sensitivity and specificity can be computed across all the possible threshold values. 
+ + The plot of `Sensitivity` (or `TPR`) versus `1-specificity` (or `FPR`) is called ROC curve.
+ + The area under the curve (AUC) is an effective measure of accuracy and has meaningful interpretations.
+ + The AUC can be interpreted as the probability that a randomly chosen `Positive` subject is rated or ranked as more likely to be `Positive` than a randomly chosen `Negative` outcome.
+ 
+## Optimal cut-off in ROC curve analysis
+
+Several metrics have been proposed to determine the optimal cut-off (**K Hajian-Tilaki, 2013**).
+
+  + Minimization of the square of distance between the point (0, 1) on the upper left corner of ROC space and any point on the ROC ruve: $d^2 = (1-TPR)^2 + FPR^2 = (1-sensitivity)^2 + (1-specificity)^2$
+  + Youden Index -- minimization of vertical distance of ROC curve from the point (x, y) on diagonal line (chance line): Youden Index =  $TPR - FPR = Sensitivity + Specificity - 1$.
+  + Incorporation of the financial costs for correct and false dianosis and the costs of further work.
+  
+## Testing of accuracy index (AUC)  
+
+Since AUC has a meaningful interpretation as Man-Whitney U-statistics, a non-parametric estimate of AUC and its standard error can be approximated. 
+
+# Precision Recall curve
+
+Likewise, a precision-recall (PR) curve plots precisoin on the $y$-axis and recall $x$-axis. While in ROC space the goal is to be in the upper-left-hand corner, it is to be in the upper-right-hand corner in the PR space. **J Davis and M Goadrich (2006)** discussed the relationship between PR curve and ROC curve. Their conclusions are
+
+  + One curve dominates another curve, "meaning that all other...curves are beneath it or equal to it".
+  + PR curve is equivalent to ROC curve, that is, a curve dominates in ROC space if and only if it dominates in PR space.
+  + In PR space, it is insufficient to linearly interpolate between points.
+  + An algorithm that optimizes the AUC in ROC space is not guaranteed to optimize AUC in the PR space.
+
