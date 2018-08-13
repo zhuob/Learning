@@ -1,0 +1,72 @@
+---
+title: "Feature Selection"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Reference
+
+  + L Yu and H Liu. ["Feature Selection for High-Dimensional Data: A Fast Correlation-Based Filter Solution" 2003](http://www.aaai.org/Papers/ICML/2003/ICML03-111.pdf)
+  + Y Saeys, I Inza, P Larrañaga. ["A review of feature selection techniques in bioinformatics" 2007](https://academic.oup.com/bioinformatics/article/23/19/2507/185254)
+  + I Guyon, A Elisseeff. ["An introduction to variable and feature selection" 2003](http://www.jmlr.org/papers/volume3/guyon03a/guyon03a.pdf)
+  + https://www.analyticsvidhya.com/blog/2016/12/introduction-to-feature-selection-methods-with-an-example-or-how-to-select-the-right-variables/
+  + R package [`Biocomb`](https://cran.r-project.org/web/packages/Biocomb/index.html)
+  
+# Feature selection  
+  
+Feature selection (FS) is different from dimensionality reduction. Althouth both methods seek to reduce the number of features in the dataset, a dimensionality reduction methods do so by creating new combinations of features, whereas FS methods only include and/or exclude features in the data without chaning them.   
+
+The objective of FS are manifold, the most important ones being:
+  
+  + to avoid overfitting and improve model performance
+  + to provide faster and more cost-effective models
+  + to gain a deeper insight into the underlying process that generates the data
+
+There are generally three classes of FS algorithms: **filter methods**, **wrapper methods** and **embedded methods**.
+
+
+## Filter methods
+  
+  Filter selects subsets of variables as a pre-processing step, independently of the chosen predictor. It assesses the relavence of features by looking only at the intrinsic properties of the data. The features are ranked by a feature relevance score, and low-score features are removed. The remaining features are served as input in an algorithm.
+  
+  + Univariate filter
+    + Pros: fast, scalable, independent of the classifier
+    + Cons: ignore feature dependencies, ignore interaction with the classifier
+    + Example: Chi-square test, Euclidian distance, t-test, information gain
+  + Multivariate filter
+    + Pros: model feature dependencies, independent of the classifer, better computational complexity than wrapper methods
+    + Cons: slower than univariate filter, less scalable, ignore interaction with classfier
+    + Example: correlation-based FS, Markov blanket filter
+    
+## Wrapper methods
+
+In wrapper methods, we try to use a subset of features and train a model using them. A search procedure in the space of possible feature subset is defined, and various subsets of features are generated and evaluated. To search the space of all feature subsets, the search algorithm is then wrapped around the classification model. The search algorithm can be divided into two categories: deterministic and randomized search algorithm. 
+
+  + Deterministic
+    + Pros: simple, interact with the classifier, model feature dependencies, less computationally intensive than randomized methods
+    + Cons: risk of overfitting, prone to obtain local optimum than randomized methods, classfier dependent selection
+    + Example: forward selection, backward elimination, stepwise
+
+  + Randomized
+    + Pros: less prone to local optima, interacts with the classifier, model feature dependencies
+    + Cons: computationally intensive, classifier dependent selection, higher risk of overfitting than deterministic methods
+    + Example: genetic algorithm, simulated annealing
+
+## Embedded methods
+
+Embedded methods combine the qualities of filter and wrapper methods. It's implemented by algorithms that have their own built-in feature selection methods. Some of the most popular examples are LASSO and RIDGE regression -- they have inbuilt penalization functions to reduce overfitting.
+  
+  + Pros: Interacts with the classifier, better computational complexity than wrapper methods, model feature dependencies
+  + Cons: classifier dependent selection
+  + Example: RIDGE, LASSO, regularized decision tree, feature selection using the weight vector of SVM
+    
+
+## Additional topics
+
+Feature construction and space dimensionality reduction
+
+  
