@@ -1,0 +1,48 @@
+---
+title: "Example Markdown"
+date: "`r Sys.Date()`"
+output:
+     html_document: default
+  
+params:
+  data: NULL
+---
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(dpi=300,fig.width=7, echo = FALSE)
+
+data <- params$data
+```
+
+# Example 01: Create Dynamic Sections
+
+## Section 02: `r data$title_01`
+
+The output value is `r data$value_01`. It should change every time.
+
+## Section 02: `r data$title_02`
+
+The output value is `r data$value_02`. It should change every time.
+
+
+# We need to render dynamic data.frames
+
+```{r, echo=FALSE}
+
+knitr::kable(
+    x = head(data$cluster_data),
+    caption = "Cluster Data"
+)
+
+```
+
+
+
+# We need to render dynamic plots
+
+```{r, echo=FALSE}
+
+ggplot2::ggplot(data$cluster_data, ggplot2::aes_string(x = names(data$cluster_data)[[1]], y = names(data$cluster_data)[[2]])) + ggplot2::geom_point()
+```
