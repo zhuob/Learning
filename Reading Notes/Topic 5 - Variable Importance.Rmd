@@ -1,8 +1,10 @@
 ---
 title: "Variable Importance"
-output: 
+output:
+  html_document:
+    df_print: paged
   html_notebook:
-    number_sections: true
+    number_sections: yes
 ---
   
 Variable importance evaluation functions can be separated into two groups: **model-based  metrics** and **model free metrics**.

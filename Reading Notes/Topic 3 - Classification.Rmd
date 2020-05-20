@@ -1,8 +1,10 @@
 ---
 title: "Classification"
-output: 
+output:
+  html_document:
+    df_print: paged
   html_notebook:
-    number_sections: true
+    number_sections: yes
 ---
   
 

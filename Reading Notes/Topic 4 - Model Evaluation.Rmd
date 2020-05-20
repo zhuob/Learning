@@ -1,10 +1,11 @@
 ---
 title: "Performance Evaluation"
-output: 
+output:
+  pdf_document: default
   html_notebook:
-    # bibliography: reference.bib
-    # csl: biomed-central.csl
-    number_sections: true
+    number_sections: yes
+  html_document:
+    df_print: paged
 ---
   
 This part is to summarize how we can evaluate the machine learning algorithms and the metrics for evaluation. 

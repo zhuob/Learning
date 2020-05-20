@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 # Reference
 
   + L Yu and H Liu. ["Feature Selection for High-Dimensional Data: A Fast Correlation-Based Filter Solution" 2003](http://www.aaai.org/Papers/ICML/2003/ICML03-111.pdf)
-  + Y Saeys, I Inza, P Larrañaga. ["A review of feature selection techniques in bioinformatics" 2007](https://academic.oup.com/bioinformatics/article/23/19/2507/185254)
+  + Y Saeys, I Inza, P Larra?aga. ["A review of feature selection techniques in bioinformatics" 2007](https://academic.oup.com/bioinformatics/article/23/19/2507/185254)
   + I Guyon, A Elisseeff. ["An introduction to variable and feature selection" 2003](http://www.jmlr.org/papers/volume3/guyon03a/guyon03a.pdf)
   + https://www.analyticsvidhya.com/blog/2016/12/introduction-to-feature-selection-methods-with-an-example-or-how-to-select-the-right-variables/
   + R package [`Biocomb`](https://cran.r-project.org/web/packages/Biocomb/index.html)
