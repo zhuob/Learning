@@ -1,0 +1,125 @@
+---
+title: "A/B Testing"
+output: 
+    html_notebook:
+      number_sections: true
+---
+
+# How to prepare?
+A lot of areas to be asked. What is my strength, and what is expected from the interviewer?
+
+  + Probability: red ball, black balls?
+  + Statistics: hypothesis testing? modeling?
+  + ML algorithm: pros and cons of each algorithm, and practical projects? 
+  + Programming language: R, Python?
+  + what is the source that you use to apply for jobs?
+  
+
+
+# A/B testing
+## Five step process of A/B test
+
+  + Step one: define success
+      - What do you want to achieve with A/B testing?
+  + Step two: Identify bottlenecks
+      - Key factors to measure the success. Site analysis along with your instincts will suggest bottlenecks where you can focus your attention.
+  + Step three: Construct a hypothesis
+  + Step four: Prioritize
+      - Use ROI (return on investment). Prioritize your experiments based on your prediction of their impact.
+  + Step five: Test
+
+## Examples A/B test
+  
+  + hiding promotion code in an expandable link increases in revenue per visitor.
+  + removing header navigation links makes customers focus on checking out.
+  + 'Why Use Us?'  Versus 'How It Works?'
+      - 'Why Use Us?' focuses more on competitions.
+      - 'How It Works' thinks what the customer thinks.
+  + star ratings vs no star ratings?
+  
+  
+## A/B Testing - What to test?  
+  
+  + Headlines
+  + Sub headline
+  + Images
+  + Texts
+  + CTA text and button
+  + Links
+  + Badges
+  + Media Mentions
+  + Social Mentions
+  + Sales promotions and offers
+  + Price stuctures
+  + Delivery options
+  + Payment options
+  + Site navigations and user interface
+  
+## Policy and Ethics
+  
+  + **Risk**: in the study, what risk is the participant undertaking? The main threshold is whether the risk exceeds that of “minimal risk”. Minimal risk is defined as the probability and magnitude of harm that a participant would encounter in normal daily life. The harm considered encompasses physical, psychological and emotional, social, and economic concerns. If the risk exceeds minimal risk, then informed consent is required. We’ll discuss informed consent further below. In most, but not all, online experiments, it can certainly be debated as to whether any of the experiments lead to anything beyond minimal risk. What risk is a participant going to be exposed to if we change the ranking of courses on an educational site, or if we change the UI on an online game? Exceptions would certainly be any websites or applications that are health or financial related. In the Facebook experiment, for example, it can be debated as to whether participants were really being exposed to anything beyond minimal risk: all items shown were going to be in their feed anyway, it’s only a question of whether removing some of the posts led to increased risk.
+  + **Benifits**: what benefits might result from the study? Even if the risk is minimal, how might the results help? In most online A/B testing, the benefits are around improving the product. In other social sciences, it is about understanding the human condition in ways that might help, for example in education and development. In medicine, the risks are often higher but the benefits are often around improved health outcomes. It is important to be able to state what the benefit would be from completing the study.
+  + **Alternatives**: what other choices do participants have? For example, if you are testing out changes to a search engine, participants always have the choice to use another search engine. The main issue is that the fewer alternatives that participants have, the more issue that there is around coercion and whether participants really have a choice in whether to participate or not, and how that balances against the risks and benefits. For example, in medical clinical trials testing out new drugs for cancer, given that the other main choice that most participants face is death, the risk allowable for participants, given informed consent, is quite high. In online experiments, the issues to consider are what the other alternative services that a user might have, and what the switching costs might be, in terms of time, money, information, etc.
+  + **Data Sensitivity**: what data is being collected, and what is the expectation of privacy and confidentiality? This last question is quite nuanced, encompassing numerous questions.
+    + Do participants understand what data is being collected about them?
+    + What harm would befall them should that data be made public?
+    + Would they expect that data to be considered private and confidential?
+    
+  + Informed Consent Form could be useful.
+  
+## Metrics for experimentation  
+  
+  + Business Objective
+  + Active users? Define "Active"
+  + Click through probability?
+  
+  Taking the example of Udacity online course, the funnel would be : hompeage visit --> Course list visits --> visit to course page --> account created --> enrolled --> coaching use --> find jobs.
+  
+### Metrics of choice could be
+  
+  + click-through-rate on "Start Now" buttom
+  + click-through-probability on "Start Now" buttom
+  + probability of processing from course list to course page 
+  + probability of processing from course page to enroll
+  + probability of enrolled students pays for coaching
+  
+  
+  Gathering Additional data
+  
+  + User experience research (UER)
+    + Good for brainstorming
+    + Can use special equipment (e.g., catching eye movement via camera)
+    + want to validate results
+  + Focus groups
+    + get feedback on hypotheticals
+    + run the risk of group think
+  + Survey
+    + online, in person, via telephone
+    + useful for metrics you cannot directly measure
+    + Be careful about the questionaire
+    
+  How to measure probability of finding information via search
+  
+    Time spent
+    clicks on results
+    follow-up queries
+    
+### Categories of summary metrics 
+
+  + sum and counts: e.g., number of users who visited page
+  + mean, median and percentile: e.g., mean age of users who completed the course, median latency of page load
+  + probabilities and rates: e.g., CTR, CRP
+  + ratios: e.g., prob(revenue generating click)/prob(any click)
+  
+  It is important to consider the sensitivity and robustness of the metric. 
+  A/A test: subgroup testing
+  
+### Some useful concept
+  Cookies: used by web sites to track unique users
+  
+# Reference 
+
+  + [Overlapping Experiment Infrastructure: More, Better, Faster Experimentation](http://static.googleusercontent.com/media/research.google.com/en/us/pubs/archive/36500.pdf)
+  
+    
+    
