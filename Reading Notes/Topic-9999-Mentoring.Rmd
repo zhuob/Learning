@@ -7,6 +7,19 @@ output: html_notebook
 This is a note that I make from conversation with Thomas, an executive director 
 at Amgen with 20+ years experience in biopharmaceutical industry.
 
+
+## July 2020
+
+  Question I asked: What is good for career development? Is clinical trial experience more important than design itself?
+  
+  Thomas gave a 3-dimensional viewpoint
+  
+    a. Disease area (e.g., Oncology, inflammation, cadiovascular)
+    b. Drug development 
+    c. Statistical design, conduct, DMC, filing 
+  
+  If I want to be more competitive in the job market, I need to experience lots trial aspects. He talked about the evolvement of Design and Innovation within Amgen. I begin to think my job may not be as important as it appears if I decide to pursue external opportunities.  
+
 ## June 2020
   Mentoring is
   
@@ -18,3 +31,4 @@ at Amgen with 20+ years experience in biopharmaceutical industry.
   + Don't think your effort will pay you back; Always think about yourself
   + hard work does not guarantee your success, learn to sell yourself
   + understand what makes you happy at work
+  
