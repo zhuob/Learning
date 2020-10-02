@@ -37,7 +37,7 @@ obtain, since most KM-curve figures report such data along with the plot itself.
 The majority, and of course, most time-consuming work, is to obtain the **click data**.
 
 Below I will demonstrate to you (1) use digitizer software (e.g.
-[DigitizeIt](https://www.digitizeit.de/)) to extrapolate time ($x$-axis) and
+[DigitizeIt](https://www.digitizeit.de/) or [WebPlotDigitizer](https://automeris.io/WebPlotDigitizer/)) to extrapolate time ($x$-axis) and
 survival probability ($y$-axis) in the KM plots, and (2) collect number
 at risk (NAR) information.
 
