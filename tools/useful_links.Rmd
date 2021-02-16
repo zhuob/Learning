@@ -1,0 +1,19 @@
+---
+title: "Useful Links"
+author: "Bin Zhuo"
+date: "2/15/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Below are some useful links that I have been exposed to 
+
+  + BIGDAWG R software package http://www.igdawg.org/software/ for
+  immunogenomics data analysis working group
+  + random forest variable importance ranking: https://www.r-bloggers.com/2018/06/be-aware-of-bias-in-rf-variable-importance-metrics/
+  + [WebPlotDigitizer](https://automeris.io/WebPlotDigitizer/)
+  + [DigitizeIt](https://www.digitizeit.de/) 
+
