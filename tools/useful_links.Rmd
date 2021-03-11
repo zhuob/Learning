@@ -16,4 +16,6 @@ Below are some useful links that I have been exposed to
   + random forest variable importance ranking: https://www.r-bloggers.com/2018/06/be-aware-of-bias-in-rf-variable-importance-metrics/
   + [WebPlotDigitizer](https://automeris.io/WebPlotDigitizer/)
   + [DigitizeIt](https://www.digitizeit.de/) 
+  + [plotly](https://plotly-r.com/index.html)
+  + [non-proportional hazard models](https://onlinelibrary.wiley.com/doi/10.1002/pst.2091)
 
