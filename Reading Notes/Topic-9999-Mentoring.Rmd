@@ -7,6 +7,8 @@ output: html_notebook
 This is a note that I make from conversation with Thomas, an executive director 
 at Amgen with 20+ years experience in biopharmaceutical industry.
 
+## September 2020
+
 ## August 2020
 
   Questions I'll ask this month
