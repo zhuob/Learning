@@ -27,5 +27,6 @@ Below are some useful links that I have been exposed to
   + [Bayesian Scientific Working Group](http://www.bayesianscientific.org)
   + [DaShu](https://dahshu.wildapricot.org/)
   + [E-book download](https://www.taylorfrancis.com/search?subject=SCBS6207)
+  
 
 
