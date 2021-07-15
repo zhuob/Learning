@@ -8,7 +8,12 @@ This is a note that I make from conversation with Thomas, an executive director
 at Amgen with 20+ years experience in biopharmaceutical industry.
 
 
-## Jun 2021
+## July 2021
+
+Learning about being a leader
+  a. regularly learn what each individual are thinking, through potentially 1:1
+  b. Make everyone happy in the team
+  c. Beware some people are more senior, and care for them
 
 
 ## September 2020
