@@ -11,9 +11,10 @@ at Amgen with 20+ years experience in biopharmaceutical industry.
 ## July 2021
 
 Learning about being a leader
-  a. regularly learn what each individual are thinking, through potentially 1:1
-  b. Make everyone happy in the team
-  c. Beware some people are more senior, and care for them
+  
+    a. regularly learn what each individual are thinking, through potentially 1:1
+    b. Make everyone happy in the team
+    c. Beware some people are more senior, and care for them
 
 
 ## September 2020
